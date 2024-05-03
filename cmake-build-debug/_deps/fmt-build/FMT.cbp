@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="FMT"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cmake-build-debug\;CMake Files\cmake-build-debug\_deps\;CMake Files\cmake-build-debug\_deps\fmt-src\;CMake Files\cmake-build-debug\_deps\fmt-src\support\;CMake Files\cmake-build-debug\_deps\fmt-src\support\cmake\;CMake Files\cmake-build-debug\_deps\sfml-src\;CMake Files\cmake-build-debug\_deps\sfml-src\cmake\;CMake Files\cmake-build-debug\_deps\sfml-src\cmake\Modules\;CMake Files\cmake-build-debug\_deps\sfml-src\src\;CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\;CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\System\;CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\Window\;CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\Network\;CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\Graphics\;CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\Audio\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fmt">
+				<Option output="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/libfmtd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 fmt"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fmt/fast">
+				<Option output="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/libfmtd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 fmt/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/ChangeLog.md">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/README.md">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/args.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/chrono.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/color.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/compile.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/core.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/format-inl.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/format.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/os.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/ostream.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/printf.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/ranges.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/std.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include/fmt/xchar.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/src/format.cc">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/src/os.cc">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\fmt-src\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/support/cmake/JoinPaths.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\fmt-src\support\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/support/cmake/fmt-config.cmake.in">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\fmt-src\support\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/support/cmake/fmt.pc.in">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\fmt-src\support\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/cmake/CompilerWarnings.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/cmake/Config.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/cmake/SFMLConfig.cmake.in">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/cmake/SFMLConfigDependencies.cmake.in">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/cmake/Modules/FindFLAC.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\cmake\Modules\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/cmake/Modules/FindFreetype.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\cmake\Modules\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/cmake/Modules/FindVORBIS.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\cmake\Modules\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/src/SFML/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/src/SFML/System/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\System\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/src/SFML/Window/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\Window\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/src/SFML/Network/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\Network\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/src/SFML/Graphics/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\Graphics\"/>
+		</Unit>
+		<Unit filename="/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/src/SFML/Audio/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cmake-build-debug\_deps\sfml-src\src\SFML\Audio\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

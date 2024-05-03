@@ -23,6 +23,6 @@ FetchContent_MakeAvailable(fmt)
 FetchContent_MakeAvailable(SFML)
 
 add_executable(2dGame main.cpp
-        init.cpp
-        init.hpp)
+        hero.hpp
+        hero.cpp)
 target_link_libraries(2dGame fmt sfml-graphics)
