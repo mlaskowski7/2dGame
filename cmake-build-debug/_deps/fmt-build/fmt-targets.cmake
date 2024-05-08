@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...3.26)
+cmake_policy(VERSION 2.8.3...3.25)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -55,7 +55,7 @@ add_library(fmt::fmt STATIC IMPORTED)
 
 set_target_properties(fmt::fmt PROPERTIES
   INTERFACE_COMPILE_FEATURES "cxx_std_11"
-  INTERFACE_INCLUDE_DIRECTORIES "/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include"
 )
 
 # Create imported target fmt::fmt-header-only
@@ -64,14 +64,14 @@ add_library(fmt::fmt-header-only INTERFACE IMPORTED)
 set_target_properties(fmt::fmt-header-only PROPERTIES
   INTERFACE_COMPILE_DEFINITIONS "FMT_HEADER_ONLY=1"
   INTERFACE_COMPILE_FEATURES "cxx_std_11"
-  INTERFACE_INCLUDE_DIRECTORIES "/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-src/include"
 )
 
 # Import target "fmt::fmt" for configuration "Debug"
 set_property(TARGET fmt::fmt APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(fmt::fmt PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "CXX"
-  IMPORTED_LOCATION_DEBUG "/Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/libfmtd.a"
+  IMPORTED_LOCATION_DEBUG "C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/fmt-build/libfmtd.a"
   )
 
 # This file does not depend on other imported targets which have

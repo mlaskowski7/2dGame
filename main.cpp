@@ -5,6 +5,7 @@
 
 #include "hero.hpp"
 
+// images were generated using DALL-E AI tool ( hero frames )
 
 auto main() -> int {
 
@@ -30,8 +31,8 @@ auto main() -> int {
     ground.setScale(10,1);
 
 //    Hero Declaration
-    auto heroFrames = std::vector<std::string>{"assets/2dGameHero.png","assets/runningAnimationPhase1.png","assets/runningAnimationPhase2.png"};
-    auto hero = Hero(1,window.getSize().y - groundTexture.getSize().y, heroFrames);
+    auto heroFrames = std::vector<std::string>{"assets/heroStandingFrame.png","assets/runningAnimationPhase1.png","assets/runningAnimationPhase2.png"};
+    auto hero = Hero(1,window.getSize().y - groundTexture.getSize().y);
 
 
 //    Game Loop
@@ -41,17 +42,17 @@ auto main() -> int {
             if(event.type == sf::Event::Closed) window.close();
         }
 
-        if (event.type == sf::Event::KeyPressed) {
+        /*if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Left) hero.moveLeft();
             if (event.key.code == sf::Keyboard::Right) hero.moveRight();
 //            if (event.key.code == sf::Keyboard::Up) ;
 //            if (event.key.code == sf::Keyboard::Down);
-        }
+        }*/
 
         window.clear(sf::Color::Black);
         window.draw(bg);
         window.draw(ground);
-        hero.draw(window);
+        window.draw(hero.heroSprite);
         window.display();
 
 

@@ -1,20 +1,22 @@
 #include "hero.hpp"
 #include <chrono>
 #include <thread>
+#include <vector>
 
-Hero::Hero(float x, float y, std::vector<std::string> const& heroFrames){
+// TODO : fix the standing frame png
+std::map<Hero::framesNames, std::string> Hero::frames = {{Hero::framesNames::STANDING, "assets/heroStandingFrame.png"},{Hero::framesNames::RUNNING_FORWARD, "assets/heroRunningFrame.png"},{Hero::framesNames::CRAWLING,"assets/heroCrawlingFrame.png"}};
+
+Hero::Hero(float x, float y){
     positionX = x;
     positionY = y;
-    frames = heroFrames;
-    heroTexture.loadFromFile(heroFrames[0]);
+    heroTexture.loadFromFile(frames[framesNames::STANDING]);
     heroSprite.setTexture(heroTexture);
+    heroSprite.setScale(0.2,0.2);
     heroSprite.setPosition(positionX, positionY);
 }
 
-auto Hero::draw(sf::RenderWindow& window) -> void{
-    window.draw(heroSprite);
-}
 
+/*
 auto Hero::moveRight() -> void{
     positionX += movementSpeed;
     heroSprite.setPosition(positionX,positionY);
@@ -33,4 +35,4 @@ auto Hero::updateFrame() -> void{
         heroSprite.setTexture(heroTexture);
         clock.restart();
     }
-}
+}*/

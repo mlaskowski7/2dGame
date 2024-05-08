@@ -1,4 +1,4 @@
-/Users/mateuszlaskowski/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /Users/mateuszlaskowski/CLionProjects/2dGame -B /Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug
+"C:\Program Files\JetBrains\CLion 2023.3.4\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" -S C:\Users\mateu\CLionProjects\2dGame -B C:\Users\mateu\CLionProjects\2dGame\cmake-build-debug
 CMake Deprecation Warning:
   Support for "Extra Generators" like
 
@@ -8,18 +8,34 @@ CMake Deprecation Warning:
   use the cmake-file-api(7) to view CMake-generated project build trees.
 
 
+-- The C compiler identification is GNU 13.1.0
+-- The CXX compiler identification is GNU 13.1.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/JetBrains/CLion 2023.3.4/bin/mingw/bin/gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/JetBrains/CLion 2023.3.4/bin/mingw/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
 -- Version: 10.2.1
 -- Build type: Debug
-CMake Warning (dev) at cmake-build-debug/_deps/sfml-src/cmake/Config.cmake:55 (EXEC_PROGRAM):
-  Policy CMP0153 is not set: The exec_program command should not be called.
-  Run "cmake --help-policy CMP0153" for policy details.  Use the cmake_policy
-  command to set the policy and suppress this warning.
-
-  Use execute_process() instead.
-Call Stack (most recent call first):
-  cmake-build-debug/_deps/sfml-src/CMakeLists.txt:41 (include)
-This warning is for project developers.  Use -Wno-dev to suppress it.
-
--- Configuring done (0.6s)
--- Generating done (0.1s)
--- Build files have been written to: /Users/mateuszlaskowski/CLionProjects/2dGame/cmake-build-debug
+-- Looking for sys/types.h
+-- Looking for sys/types.h - found
+-- Looking for stdint.h
+-- Looking for stdint.h - found
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Check size of void*
+-- Check size of void* - done
+-- Found OpenGL: opengl32   
+-- Looking for dinput.h
+-- Looking for dinput.h - found
+-- Found OpenAL: C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/extlibs/libs-mingw/x64/libopenal32.a  
+-- Found VORBIS: C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/extlibs/libs-mingw/x64/libvorbisenc.a;C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/extlibs/libs-mingw/x64/libvorbisfile.a;C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/extlibs/libs-mingw/x64/libvorbis.a;C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/extlibs/libs-mingw/x64/libogg.a  
+-- Found FLAC: C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug/_deps/sfml-src/extlibs/libs-mingw/x64/libFLAC.a  
+-- Configuring done (18.8s)
+-- Generating done (0.2s)
+-- Build files have been written to: C:/Users/mateu/CLionProjects/2dGame/cmake-build-debug

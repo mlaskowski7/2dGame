@@ -1,14 +1,21 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <map>
 
 struct Hero{
+
     float positionX;
     float positionY;
     static const auto movementSpeed = 10;
 
+    enum framesNames{
+        STANDING,
+        RUNNING_FORWARD,
+        CRAWLING
+    };
+
 //    Hero Frames Collection
-    std::vector<std::string> frames;
-    int currentFrame;
+    static std::map<framesNames, std::string> frames;
 
     sf::Sprite heroSprite;
     sf::Texture heroTexture;
@@ -17,7 +24,7 @@ struct Hero{
     sf::Clock clock;
 
 
-    Hero(float x, float y, std::vector<std::string> const& heroFrames);
+    Hero(float x, float y);
 
     auto draw(sf::RenderWindow& window) -> void;
 
