@@ -23,15 +23,18 @@ struct Hero{
 //    Clock for animation timing
     sf::Clock clock;
 
-
+//    Default hero constructor for two arguments initializing positionX and positionY
     Hero(float x, float y);
 
-    auto draw(sf::RenderWindow& window) -> void;
+//    Void used to set starting point for the hero at the beginning of the game and maybe also after changing the floor
+    auto setStartingPosition(sf::Sprite const& ground) -> void;
+
+    /*auto draw(sf::RenderWindow& window) -> void;
 
     auto moveRight() -> void;
 
     auto moveLeft() -> void;
 
-    auto updateFrame() -> void;
+    auto updateFrame() -> void;*/
 
 };

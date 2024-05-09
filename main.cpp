@@ -5,13 +5,13 @@
 
 #include "hero.hpp"
 
-// images were generated using DALL-E AI tool ( hero frames )
+// images were generated using DALL-E AI tool ( hero frames, ground frame, background frame )
 
 auto main() -> int {
 
 //    Window Declaration
     auto window = sf::RenderWindow(
-            sf::VideoMode({800,512}),
+            sf::VideoMode({1792,1024}),
             "2D Game", sf::Style::Default,
             sf::ContextSettings(0,0, 8)
             );
@@ -19,20 +19,21 @@ auto main() -> int {
 //    Background Sprite Declaration
     auto bg = sf::Sprite();
     sf::Texture bgTexture;
-    bgTexture.loadFromFile("assets/background.png");
+    bgTexture.loadFromFile("../assets/background/background.png");
     bg.setTexture(bgTexture);
 
 //    Ground Sprite Declaration
     auto ground  = sf::Sprite();
     sf::Texture groundTexture;
-    groundTexture.loadFromFile("assets/ground.png");
+    groundTexture.loadFromFile("../assets/ground/ground.png");
     ground.setTexture(groundTexture);
     ground.setPosition(0, window.getSize().y - groundTexture.getSize().y);
-    ground.setScale(10,1);
+
 
 //    Hero Declaration
-    auto heroFrames = std::vector<std::string>{"assets/heroStandingFrame.png","assets/runningAnimationPhase1.png","assets/runningAnimationPhase2.png"};
-    auto hero = Hero(1,window.getSize().y - groundTexture.getSize().y);
+    auto hero = Hero(0,0);
+    hero.setStartingPosition(ground);
+
 
 
 //    Game Loop
