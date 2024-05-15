@@ -4,37 +4,40 @@
 
 struct Hero{
 
-    float positionX;
-    float positionY;
-    static const auto MOVEMENT_SPEED = 10;
-    static const auto GRAVITY = 10;
-    static const auto JUMPING_SPEED = 20;
+    sf::Vector2f position;
 
-    enum framesNames{
-        STANDING,
-        RUNNING_FORWARD,
-        CRAWLING
-    };
+    sf::Vector2f movementVelocity = sf::Vector2f(0.02f,0);
+    sf::Vector2f gravityVelocity = sf::Vector2f(0,0.02f);
+    sf::Vector2f jumpingVelocity = sf::Vector2f(0,-0.02f);
+
 
 //    Hero Frames Collection
-    static std::map<framesNames, std::string> frames;
+    static std::map<std::string, std::vector<std::string>> frames;
 
     sf::Sprite heroSprite;
     sf::Texture heroTexture;
 
-//    Clock for animation timing
-    sf::Clock clock;
+//    Default constructor
+    Hero();
 
-//    Default hero constructor for two arguments initializing positionX and positionY
-    Hero(float x, float y);
+//    Animations stuff
+    float timer = 0.0f;
+    size_t currentFrame = 0;
+    auto animation(std::vector<std::string> const& frames, float const& startTime) -> void;
+
+
+
+
 
 //    Void used to set starting point for the hero at the beginning of the game and maybe also after changing the floor
     auto setStartingPosition(sf::Sprite const& ground) -> void;
 
 //    Functions used to not repeat boilerplate code
-    auto changeFrame(framesNames const& frameName) -> void;
-    auto updatePositionX(float x) -> void;
-    auto updatePositionY(float y) -> void;
+    auto changeFrame(std::string const& path) -> void;
+    auto updatePosition(sf::Vector2f const& newPosition) -> void;
+    auto updatePosition() -> void;
+
+
 
 //    Hero gravity
     auto gravityEffect() -> void;

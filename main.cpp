@@ -5,7 +5,15 @@
 
 #include "hero.hpp"
 
-// images were generated using DALL-E AI tool ( hero frames, ground frame, background frame )
+// CREDITS:
+// hero textures were taken from https://www.gameart2d.com/
+// ground textures, background textures were generated using DALL-E AI tool
+
+auto rightArrowOnClick(Hero& hero, sf::Clock& clock) -> void;
+auto leftArrowOnClick(Hero& hero, sf::Clock& clock) -> void;
+auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& clock) -> void;
+auto downArrowOnClick(Hero& hero, sf::Clock& clock) -> void;
+
 
 auto main() -> int {
 
@@ -31,10 +39,14 @@ auto main() -> int {
 
 
 //    Hero Declaration
-    auto hero = Hero(0,0);
+    auto hero = Hero();
     hero.setStartingPosition(ground);
 
+//    Boolean for blocking jump during gravity falling (to prevent flying effect)
+    bool jumpBlocked = false;
 
+//    sfml clock for animations
+    auto clock = sf::Clock();
 
 //    Game Loop
     while(window.isOpen()){
@@ -44,16 +56,22 @@ auto main() -> int {
         }
 
         if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::Left) hero.moveLeft();
-            if (event.key.code == sf::Keyboard::Right) hero.moveRight();
-            if (event.key.code == sf::Keyboard::Up) hero.jump();
-//            if (event.key.code == sf::Keyboard::Down);
+            if (event.key.code == sf::Keyboard::Left) leftArrowOnClick(hero, clock);
+            if (event.key.code == sf::Keyboard::Right) rightArrowOnClick(hero, clock);
+            if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, clock);
+            if (event.key.code == sf::Keyboard::Down) downArrowOnClick(hero, clock);
         }
 
         if(hero.heroSprite.getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y){
-            hero.gravityEffect();
-            fmt::println("Gravity function called");
+            jumpBlocked = true;
+            for(auto i = 0; i < 10; i++){
+                hero.gravityEffect();
+            }
+        } else{
+            jumpBlocked = false;
         }
+
+        hero.animation(Hero::frames["Idle"], clock.restart().asSeconds());
 
         window.clear(sf::Color::Black);
         window.draw(bg);
@@ -64,4 +82,28 @@ auto main() -> int {
 
     }
 
+}
+
+auto rightArrowOnClick(Hero& hero, sf::Clock& clock) -> void{
+    hero.animation(Hero::frames["Run"], clock.restart().asSeconds());
+    for(auto i = 0; i < 1000; i++){
+        hero.moveRight();
+    }
+}
+
+auto leftArrowOnClick(Hero& hero, sf::Clock& clock) -> void{
+    for(auto i = 0; i < 1000; i++){
+        hero.moveLeft();
+    }
+}
+
+auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& clock) -> void{
+    if(!jumpBlocked){
+        for(auto i = 0; i < 5000; i++){
+            hero.jump();
+        }
+    }
+}
+
+auto downArrowOnClick(Hero& hero, sf::Clock& clock) -> void{
 }

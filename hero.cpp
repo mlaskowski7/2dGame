@@ -1,64 +1,88 @@
 #include "hero.hpp"
 
-#include <map>
+#include <filesystem>
 
 // Using fmt for debugging purposes
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 
-std::map<Hero::framesNames, std::string> Hero::frames = {{Hero::framesNames::STANDING, "../assets/hero/heroStandingFrame.png"},{Hero::framesNames::RUNNING_FORWARD, "../assets/hero/heroRunningForwardFrame.png"},{Hero::framesNames::CRAWLING,"../assets/hero/heroCrawlingFrame.png"}};
+//  Method that is used to populate image paths with the help of filesystem
+auto getFramesMap() -> std::map<std::string, std::vector<std::string>>{
+    auto result = std::map<std::string, std::vector<std::string>>();
 
+    for(auto const& subdir : std::filesystem::directory_iterator("../assets/hero")){
+        if(subdir.is_directory()){
+            auto paths = std::vector<std::string>();
+            for(auto const& image : std::filesystem::directory_iterator(subdir.path())){
+                paths.push_back(image.path().string());
+            }
 
-
-auto Hero::updatePositionX(float x) -> void{
-    positionX = x;
-    heroSprite.setPosition(positionX, positionY);
+            auto key = subdir.path().filename().string();
+            result[key] = paths;
+        }
+    }
+    fmt::println("Generated frames map - {}", result);
+    return result;
 }
 
-auto Hero::updatePositionY(float y) -> void {
-    positionY = y;
-    heroSprite.setPosition(positionX, positionY);
+// Loading hero frames
+std::map<std::string,std::vector<std::string>> Hero::frames = getFramesMap();
+
+auto Hero::animation(std::vector<std::string> const& frames, float const& startTime) -> void{
+    auto nextFrame = (currentFrame + 1) % frames.size();
+    timer += startTime;
+    if(timer >= 0.1f){
+        timer = 0.0f;
+        heroTexture.loadFromFile(frames[nextFrame]);
+        heroSprite.setTexture(heroTexture);
+        currentFrame = nextFrame;
+    }
+
 }
 
-auto Hero::changeFrame(Hero::framesNames const& frameName) -> void {
-    heroTexture.loadFromFile(frames[frameName]);
+auto Hero::updatePosition(sf::Vector2f const& newPosition) -> void{
+    position = newPosition;
+    heroSprite.setPosition(position);
+}
+
+auto Hero::updatePosition() -> void {
+    heroSprite.setPosition(position);
+}
+
+auto Hero::changeFrame(std::string const& framePath) -> void {
+    heroTexture.loadFromFile(framePath);
     heroSprite.setTexture(heroTexture);
 }
 
-Hero::Hero(float x, float y){
-    updatePositionX(x);
-    updatePositionY(x);
-    changeFrame(framesNames::STANDING);
+Hero::Hero(){
+    changeFrame(frames["Idle"][0]);
     heroSprite.setScale(0.3,0.3);
     fmt::println("Hero initialized successfully");
 }
 
 auto Hero::setStartingPosition(sf::Sprite const& ground) -> void {
-    positionX = 1;
-    positionY = ground.getPosition().y - 2*ground.getTexture()->getSize().y;
-    heroSprite.setPosition(positionX, positionY);
-    fmt::println("Hero starting postion set to x = {}, y = {}", heroSprite.getPosition().x, heroSprite.getPosition().y);
+    updatePosition(sf::Vector2f(1,ground.getPosition().y - 2*ground.getTexture()->getSize().y));
+    fmt::println("Hero starting position set to x = {}, y = {}", heroSprite.getPosition().x, heroSprite.getPosition().y);
 }
 
 
 // TODO: frames animation while moving right
 auto Hero::moveRight() -> void{
-    changeFrame(framesNames::RUNNING_FORWARD);
-    positionX += MOVEMENT_SPEED;
-    heroSprite.setPosition(positionX,positionY);
-
-    changeFrame(framesNames::STANDING);
+    position += movementVelocity;
+    updatePosition();
 }
 
 auto Hero::moveLeft() -> void{
-    positionX -= MOVEMENT_SPEED;
-    heroSprite.setPosition(positionX,positionY);
+    position -= movementVelocity;
+    updatePosition();
 }
 
 auto Hero::jump() -> void {
-    positionY -= JUMPING_SPEED;
-    heroSprite.setPosition(positionX, positionY);
+    position += jumpingVelocity;
+    updatePosition();
 }
 
 auto Hero::gravityEffect() -> void{
-    updatePositionY(positionY + GRAVITY);
+    position += gravityVelocity;
+    updatePosition();
 }
