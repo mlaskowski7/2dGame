@@ -43,12 +43,17 @@ auto main() -> int {
             if(event.type == sf::Event::Closed) window.close();
         }
 
-        /*if (event.type == sf::Event::KeyPressed) {
+        if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Left) hero.moveLeft();
             if (event.key.code == sf::Keyboard::Right) hero.moveRight();
-//            if (event.key.code == sf::Keyboard::Up) ;
+            if (event.key.code == sf::Keyboard::Up) hero.jump();
 //            if (event.key.code == sf::Keyboard::Down);
-        }*/
+        }
+
+        if(hero.heroSprite.getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y){
+            hero.gravityEffect();
+            fmt::println("Gravity function called");
+        }
 
         window.clear(sf::Color::Black);
         window.draw(bg);
