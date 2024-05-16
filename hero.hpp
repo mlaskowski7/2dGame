@@ -21,9 +21,12 @@ struct Hero{
     Hero();
 
 //    Animations stuff
+    std::string ongoingAnimation;
     float timer = 0.0f;
-    size_t currentFrame = 0;
-    auto animation(std::vector<std::string> const& frames, float const& startTime) -> void;
+    size_t ongoingFrame = 0;
+    auto changeAnimation(std::string const& animKey) -> void;
+    auto animation(float const& startTime) -> void;
+
 
 
 
@@ -33,7 +36,7 @@ struct Hero{
     auto setStartingPosition(sf::Sprite const& ground) -> void;
 
 //    Functions used to not repeat boilerplate code
-    auto changeFrame(std::string const& path) -> void;
+    auto changeFrame(std::string const& framePath) -> void;
     auto updatePosition(sf::Vector2f const& newPosition) -> void;
     auto updatePosition() -> void;
 

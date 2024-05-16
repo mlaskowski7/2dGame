@@ -28,14 +28,24 @@ auto getFramesMap() -> std::map<std::string, std::vector<std::string>>{
 // Loading hero frames
 std::map<std::string,std::vector<std::string>> Hero::frames = getFramesMap();
 
-auto Hero::animation(std::vector<std::string> const& frames, float const& startTime) -> void{
-    auto nextFrame = (currentFrame + 1) % frames.size();
+auto Hero::changeAnimation(std::string const& animKey) -> void{
+    if(ongoingAnimation != animKey){
+        timer = 0.0f;
+        ongoingAnimation = animKey;
+        ongoingFrame = 0;
+        changeFrame(frames[ongoingAnimation][ongoingFrame]);
+        fmt::println("Changed animation to: {}", animKey);
+    }
+
+}
+
+auto Hero::animation(float const& startTime) -> void{
+    auto nextFrame = (ongoingFrame + 1) % frames[ongoingAnimation].size();
     timer += startTime;
     if(timer >= 0.1f){
         timer = 0.0f;
-        heroTexture.loadFromFile(frames[nextFrame]);
-        heroSprite.setTexture(heroTexture);
-        currentFrame = nextFrame;
+        ongoingFrame = nextFrame;
+        changeFrame(frames[ongoingAnimation][ongoingFrame]);
     }
 
 }
@@ -50,12 +60,16 @@ auto Hero::updatePosition() -> void {
 }
 
 auto Hero::changeFrame(std::string const& framePath) -> void {
-    heroTexture.loadFromFile(framePath);
+    auto tempTexture = sf::Texture();
+    tempTexture.loadFromFile(framePath);
+    heroTexture = tempTexture;
     heroSprite.setTexture(heroTexture);
+    fmt::println("Successfully changed frame to {}", framePath);
 }
 
 Hero::Hero(){
-    changeFrame(frames["Idle"][0]);
+    changeAnimation("Run");
+    changeAnimation("Idle");
     heroSprite.setScale(0.3,0.3);
     fmt::println("Hero initialized successfully");
 }
