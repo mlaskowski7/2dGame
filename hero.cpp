@@ -1,14 +1,50 @@
 #include "hero.hpp"
-#include "utitlities.hpp"
+#include "utilities.hpp"
 
 // Using fmt for debugging purposes
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
+// Default constructor implementation
+Hero::Hero(){
+    changeAnimation("Idle");
+    isSliding = false;
+    heroSprite.setScale(0.3,0.3);
+    fmt::println("Hero initialized successfully");
+}
+
+auto Hero::setStartingPosition(sf::Sprite const& ground) -> void {
+    updatePosition(sf::Vector2f(1,ground.getPosition().y - 2*ground.getTexture()->getSize().y));
+    fmt::println("Hero starting position set to x = {}, y = {}", heroSprite.getPosition().x, heroSprite.getPosition().y);
+}
+
+// Hero sprite getter implementation
+auto Hero::getHeroSprite() -> sf::Sprite {
+    return heroSprite;
+}
+
+// Methods used to not repeat boilerplate code implementation
+auto Hero::updatePosition(sf::Vector2f const& newPosition) -> void{
+    position = newPosition;
+    heroSprite.setPosition(position);
+}
+
+auto Hero::updatePosition() -> void {
+    heroSprite.setPosition(position);
+}
+
+auto Hero::changeFrame(std::string const& framePath) -> void {
+    heroTexture.loadFromFile(framePath);
+    heroSprite.setTexture(heroTexture);
+    heroSprite.setTextureRect(sf::IntRect(0,0, heroTexture.getSize().x, heroTexture.getSize().y));
+    fmt::println("Successfully changed frame to {}", framePath);
+}
+
 
 // Loading hero frames
 std::map<std::string,std::vector<std::string>> Hero::frames = getFramesMap();
 
+// Hero animations methods implementation
 auto Hero::changeAnimation(std::string const& animKey) -> void{
     if(ongoingAnimation != animKey){
         timer = 0.0f;
@@ -31,40 +67,7 @@ auto Hero::animation(float const& startTime) -> void{
 
 }
 
-auto Hero::updatePosition(sf::Vector2f const& newPosition) -> void{
-    position = newPosition;
-    heroSprite.setPosition(position);
-}
-
-auto Hero::updatePosition() -> void {
-    heroSprite.setPosition(position);
-}
-
-auto Hero::changeFrame(std::string const& framePath) -> void {
-    heroTexture.loadFromFile(framePath);
-    heroSprite.setTexture(heroTexture);
-    heroSprite.setTextureRect(sf::IntRect(0,0, heroTexture.getSize().x, heroTexture.getSize().y));
-    fmt::println("Successfully changed frame to {}", framePath);
-}
-
-Hero::Hero(){
-    changeAnimation("Idle");
-    isSliding = false;
-    heroSprite.setScale(0.3,0.3);
-    fmt::println("Hero initialized successfully");
-}
-
-auto Hero::setStartingPosition(sf::Sprite const& ground) -> void {
-    updatePosition(sf::Vector2f(1,ground.getPosition().y - 2*ground.getTexture()->getSize().y));
-    fmt::println("Hero starting position set to x = {}, y = {}", heroSprite.getPosition().x, heroSprite.getPosition().y);
-}
-
-auto Hero::getHeroSprite() -> sf::Sprite {
-    return heroSprite;
-}
-
-
-// TODO: frames animation while moving right
+// Hero controls implementation
 auto Hero::moveRight() -> void{
     position += movementVelocity;
     updatePosition();
@@ -82,7 +85,6 @@ auto Hero::jump() -> void {
 
 auto Hero::slide() -> void{
     position += slideVelocity;
-    position += movementVelocity;
     updatePosition();
 }
 

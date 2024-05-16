@@ -1,4 +1,4 @@
-#include "utitlities.hpp"
+#include "utilities.hpp"
 
 auto getFramesMap() -> std::map<std::string, std::vector<std::string>>{
     auto result = std::map<std::string, std::vector<std::string>>();

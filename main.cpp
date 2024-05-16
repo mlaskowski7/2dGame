@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "hero.hpp"
+#include "mainMenu.hpp"
 
 // CREDITS:
 // hero textures were taken from https://www.gameart2d.com/
@@ -23,6 +24,9 @@ auto main() -> int {
             "2D Game", sf::Style::Default,
             sf::ContextSettings(0,0, 8)
             );
+
+//    Boolean determining wheter game has started
+    auto gameStarted = false;
 
 //    Background Sprite Declaration
     auto bg = sf::Sprite();
@@ -51,6 +55,8 @@ auto main() -> int {
 
     auto startTime = float();
 
+
+
 //    Game Loop
     while(window.isOpen()){
         startTime = clock.restart().asSeconds();
@@ -59,7 +65,7 @@ auto main() -> int {
             if(event.type == sf::Event::Closed) window.close();
         }
 
-        if (event.type == sf::Event::KeyPressed) {
+        if (event.type == sf::Event::KeyPressed && gameStarted) {
             if (event.key.code == sf::Keyboard::Left) leftArrowOnClick(hero, lastMovementClock, ground);
             if (event.key.code == sf::Keyboard::Right) rightArrowOnClick(hero, lastMovementClock, ground);
             if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, lastMovementClock, ground);
@@ -93,7 +99,9 @@ auto main() -> int {
         window.clear(sf::Color::Black);
         window.draw(bg);
         window.draw(ground);
-        window.draw(hero.getHeroSprite());
+        if(gameStarted){
+            window.draw(hero.getHeroSprite());
+        }
         window.display();
 
 
