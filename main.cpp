@@ -20,8 +20,8 @@ auto main() -> int {
 
 //    Window Declaration
     auto window = sf::RenderWindow(
-            sf::VideoMode({1792,1024}),
-            "2D Game", sf::Style::Default,
+            sf::VideoMode({1700,1024}),
+            "2D Game", sf::Style::Titlebar | sf::Style::Close,
             sf::ContextSettings(0,0, 8)
             );
 
@@ -46,6 +46,9 @@ auto main() -> int {
     auto hero = Hero();
     hero.setStartingPosition(ground);
 
+//    Main Menu Object declaration
+    auto mainMenu = MainMenu();
+
 //    Boolean for blocking jump during gravity falling (to prevent flying effect)
     bool jumpBlocked = false;
 
@@ -62,15 +65,29 @@ auto main() -> int {
         startTime = clock.restart().asSeconds();
         auto event = sf::Event();
         while(window.pollEvent(event)){
-            if(event.type == sf::Event::Closed) window.close();
+            if(event.type == sf::Event::Closed) {
+                window.close();
+            } else if(event.type == sf::Event::MouseButtonPressed) {
+                if(event.mouseButton.button == sf::Mouse::Left){
+                    auto mousePosition = sf::Mouse::getPosition(window);
+                    if(mainMenu.getNewGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
+                        hero.setStartingPosition(ground);
+                        gameStarted = true;
+                    } else if (mainMenu.getResumeGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
+                        gameStarted = true;
+                    } else if(mainMenu.getPauseGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
+                        gameStarted = false;
+                    }
+                }
+            } else if (event.type == sf::Event::KeyPressed && gameStarted) {
+                if (event.key.code == sf::Keyboard::Left) leftArrowOnClick(hero, lastMovementClock, ground);
+                if (event.key.code == sf::Keyboard::Right) rightArrowOnClick(hero, lastMovementClock, ground);
+                if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, lastMovementClock, ground);
+                if (event.key.code == sf::Keyboard::Down) downArrowOnClick(hero, jumpBlocked, lastMovementClock);
+            }
         }
 
-        if (event.type == sf::Event::KeyPressed && gameStarted) {
-            if (event.key.code == sf::Keyboard::Left) leftArrowOnClick(hero, lastMovementClock, ground);
-            if (event.key.code == sf::Keyboard::Right) rightArrowOnClick(hero, lastMovementClock, ground);
-            if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, lastMovementClock, ground);
-            if (event.key.code == sf::Keyboard::Down) downArrowOnClick(hero, jumpBlocked, lastMovementClock);
-        }
+
 
 
 //        Back to idle if standing ( prevents running when not moving )
@@ -84,7 +101,7 @@ auto main() -> int {
 
         if(hero.getHeroSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y){
             jumpBlocked = true;
-            for(auto i = 0; i < 10; i++){
+            for(auto i = 0; i < 15; i++){
                 hero.gravityEffect();
             }
         }else if(hero.getHeroSprite().getPosition().y > ground.getPosition().y - 2*groundTexture.getSize().y){
@@ -94,14 +111,23 @@ auto main() -> int {
             hero.isSliding = false;
         }
 
+//        Move hero to start if  touched the border of a window
+        if(hero.getHeroSprite().getPosition().x >= window.getSize().x){
+            hero.setStartingPosition(ground);
+        }
+
         hero.animation(startTime);
 
         window.clear(sf::Color::Black);
         window.draw(bg);
         window.draw(ground);
-        if(gameStarted){
+        if(!gameStarted){
+            mainMenu.displayMainMenu(window);
+        } else{
+            mainMenu.displayPauseButton(window);
             window.draw(hero.getHeroSprite());
         }
+
         window.display();
 
 
@@ -138,7 +164,7 @@ auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovement
     if(!jumpBlocked){
         hero.changeAnimation("Jump");
         lastMovementClock.restart();
-        for(auto i = 0; i < 6000; i++){
+        for(auto i = 0; i < 8000; i++){
             hero.jump();
         }
     }
