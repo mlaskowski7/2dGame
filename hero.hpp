@@ -9,6 +9,7 @@ struct Hero{
     sf::Vector2f movementVelocity = sf::Vector2f(0.02f,0);
     sf::Vector2f gravityVelocity = sf::Vector2f(0,0.02f);
     sf::Vector2f jumpingVelocity = sf::Vector2f(0,-0.02f);
+    sf::Vector2f slideVelocity = sf::Vector2f(0,0.02f);
 
 
 //    Hero Frames Collection
@@ -27,6 +28,9 @@ struct Hero{
     auto changeAnimation(std::string const& animKey) -> void;
     auto animation(float const& startTime) -> void;
 
+//    Sliding func
+    bool isSliding;
+    auto backFromSliding(sf::Sprite const& ground) -> void;
 
 
 
@@ -51,6 +55,8 @@ struct Hero{
     auto moveLeft() -> void;
 
     auto jump() -> void;
+
+    auto slide() -> void;
 
 
 

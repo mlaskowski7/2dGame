@@ -70,6 +70,7 @@ auto Hero::changeFrame(std::string const& framePath) -> void {
 Hero::Hero(){
     changeAnimation("Run");
     changeAnimation("Idle");
+    isSliding = false;
     heroSprite.setScale(0.3,0.3);
     fmt::println("Hero initialized successfully");
 }
@@ -93,6 +94,18 @@ auto Hero::moveLeft() -> void{
 
 auto Hero::jump() -> void {
     position += jumpingVelocity;
+    updatePosition();
+}
+
+auto Hero::slide() -> void{
+    position += slideVelocity;
+    position += movementVelocity;
+    updatePosition();
+}
+
+auto Hero::backFromSliding(sf::Sprite const& ground) -> void{
+    auto newPosition = sf::Vector2f(heroSprite.getPosition().x, ground.getPosition().y - 2*ground.getTexture()->getSize().y);
+    position = newPosition;
     updatePosition();
 }
 
