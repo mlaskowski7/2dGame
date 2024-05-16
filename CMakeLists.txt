@@ -24,5 +24,9 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(2dGame main.cpp
         hero.hpp
-        hero.cpp)
+        hero.cpp
+        ground.hpp
+        utitilites.hpp
+        utitlities.cpp
+        utitlities.hpp)
 target_link_libraries(2dGame fmt sfml-graphics)

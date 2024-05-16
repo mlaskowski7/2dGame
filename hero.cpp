@@ -1,29 +1,10 @@
 #include "hero.hpp"
-
-#include <filesystem>
+#include "utitlities.hpp"
 
 // Using fmt for debugging purposes
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-//  Method that is used to populate image paths with the help of filesystem
-auto getFramesMap() -> std::map<std::string, std::vector<std::string>>{
-    auto result = std::map<std::string, std::vector<std::string>>();
-
-    for(auto const& subdir : std::filesystem::directory_iterator("../assets/hero")){
-        if(subdir.is_directory()){
-            auto paths = std::vector<std::string>();
-            for(auto const& image : std::filesystem::directory_iterator(subdir.path())){
-                paths.push_back(image.path().string());
-            }
-
-            auto key = subdir.path().filename().string();
-            result[key] = paths;
-        }
-    }
-    fmt::println("Generated frames map - {}", result);
-    return result;
-}
 
 // Loading hero frames
 std::map<std::string,std::vector<std::string>> Hero::frames = getFramesMap();
@@ -60,15 +41,13 @@ auto Hero::updatePosition() -> void {
 }
 
 auto Hero::changeFrame(std::string const& framePath) -> void {
-    auto tempTexture = sf::Texture();
-    tempTexture.loadFromFile(framePath);
-    heroTexture = tempTexture;
+    heroTexture.loadFromFile(framePath);
     heroSprite.setTexture(heroTexture);
+    heroSprite.setTextureRect(sf::IntRect(0,0, heroTexture.getSize().x, heroTexture.getSize().y));
     fmt::println("Successfully changed frame to {}", framePath);
 }
 
 Hero::Hero(){
-    changeAnimation("Run");
     changeAnimation("Idle");
     isSliding = false;
     heroSprite.setScale(0.3,0.3);
@@ -78,6 +57,10 @@ Hero::Hero(){
 auto Hero::setStartingPosition(sf::Sprite const& ground) -> void {
     updatePosition(sf::Vector2f(1,ground.getPosition().y - 2*ground.getTexture()->getSize().y));
     fmt::println("Hero starting position set to x = {}, y = {}", heroSprite.getPosition().x, heroSprite.getPosition().y);
+}
+
+auto Hero::getHeroSprite() -> sf::Sprite {
+    return heroSprite;
 }
 
 

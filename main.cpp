@@ -5,17 +5,14 @@
 
 #include "hero.hpp"
 
-#include <chrono>
-#include <thread>
-
 // CREDITS:
 // hero textures were taken from https://www.gameart2d.com/
 // ground textures, background textures were generated using DALL-E AI tool
 
-auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock) -> void;
-auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock) -> void;
-auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void;
-auto downArrowOnClick(Hero& hero, sf::Clock& lastMovementClock) -> void;
+auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
+auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
+auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
+auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void;
 
 
 auto main() -> int {
@@ -36,9 +33,9 @@ auto main() -> int {
 //    Ground Sprite Declaration
     auto ground  = sf::Sprite();
     sf::Texture groundTexture;
-    groundTexture.loadFromFile("../assets/ground/ground.png");
+    groundTexture.loadFromFile("../assets/ground/groundDoubled.png");
     ground.setTexture(groundTexture);
-    ground.setPosition(0, window.getSize().y - groundTexture.getSize().y);
+    ground.setPosition(sf::Vector2f(0, window.getSize().y - groundTexture.getSize().y + 5));
 
 
 //    Hero Declaration
@@ -63,28 +60,28 @@ auto main() -> int {
         }
 
         if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::Left) leftArrowOnClick(hero, lastMovementClock);
-            if (event.key.code == sf::Keyboard::Right) rightArrowOnClick(hero, lastMovementClock);
-            if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, lastMovementClock);
-            if (event.key.code == sf::Keyboard::Down) downArrowOnClick(hero, lastMovementClock);
+            if (event.key.code == sf::Keyboard::Left) leftArrowOnClick(hero, lastMovementClock, ground);
+            if (event.key.code == sf::Keyboard::Right) rightArrowOnClick(hero, lastMovementClock, ground);
+            if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, lastMovementClock, ground);
+            if (event.key.code == sf::Keyboard::Down) downArrowOnClick(hero, jumpBlocked, lastMovementClock);
         }
 
 
 //        Back to idle if standing ( prevents running when not moving )
         if(lastMovementClock.getElapsedTime().asSeconds() > 0.5){
-            if(hero.heroSprite.getPosition().y > ground.getPosition().y - 2*groundTexture.getSize().y){
+            if(hero.getHeroSprite().getPosition().y > ground.getPosition().y - 2*groundTexture.getSize().y){
                 hero.backFromSliding(ground);
             }
             hero.changeAnimation("Idle");
 
         }
 
-        if(hero.heroSprite.getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y){
+        if(hero.getHeroSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y){
             jumpBlocked = true;
             for(auto i = 0; i < 10; i++){
                 hero.gravityEffect();
             }
-        }else if(hero.heroSprite.getPosition().y > ground.getPosition().y - 2*groundTexture.getSize().y){
+        }else if(hero.getHeroSprite().getPosition().y > ground.getPosition().y - 2*groundTexture.getSize().y){
             hero.isSliding = true;
         } else{
             jumpBlocked = false;
@@ -96,7 +93,7 @@ auto main() -> int {
         window.clear(sf::Color::Black);
         window.draw(bg);
         window.draw(ground);
-        window.draw(hero.heroSprite);
+        window.draw(hero.getHeroSprite());
         window.display();
 
 
@@ -104,7 +101,10 @@ auto main() -> int {
 
 }
 
-auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock) -> void{
+auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
+    if(hero.getHeroSprite().getPosition().y > ground.getPosition().y - 2*ground.getTexture()->getSize().y){
+        hero.backFromSliding(ground);
+    }
     hero.changeAnimation("Run");
     lastMovementClock.restart();
     for(auto i = 0; i < 1000; i++){
@@ -112,7 +112,10 @@ auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock) -> void{
     }
 }
 
-auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock) -> void{
+auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
+    if(hero.getHeroSprite().getPosition().y > ground.getPosition().y - 2*ground.getTexture()->getSize().y){
+        hero.backFromSliding(ground);
+    }
     hero.changeAnimation("RunBackwards");
     lastMovementClock.restart();
     for(auto i = 0; i < 1000; i++){
@@ -120,7 +123,10 @@ auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock) -> void{
     }
 }
 
-auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void{
+auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
+    if(hero.getHeroSprite().getPosition().y > ground.getPosition().y - 2*ground.getTexture()->getSize().y){
+        hero.backFromSliding(ground);
+    }
     if(!jumpBlocked){
         hero.changeAnimation("Jump");
         lastMovementClock.restart();
@@ -130,8 +136,8 @@ auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovement
     }
 }
 
-auto downArrowOnClick(Hero& hero, sf::Clock& lastMovementClock) -> void{
-    if(!hero.isSliding){
+auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void{
+    if(!hero.isSliding && !jumpBlocked){
         hero.changeAnimation("Slide");
         lastMovementClock.restart();
         for(auto i = 0; i < 1500; i++){
