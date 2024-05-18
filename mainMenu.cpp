@@ -1,6 +1,10 @@
 #include "mainMenu.hpp"
+#include "utilities.hpp"
 
 MainMenu::MainMenu() {
+
+    container = sf::RectangleShape(sf::Vector2f(300,300));
+    container.setFillColor(sf::Color(0,0,0,128));
 
     font = sf::Font();
     font.loadFromFile("../assets/font/RobotoMono-Italic-VariableFont_wght.ttf");
@@ -18,22 +22,23 @@ MainMenu::MainMenu() {
     resumeGameText.setFillColor(sf::Color::Black);
     resumeGameButton = sf::RectangleShape(sf::Vector2f(210,50));
 
-    pauseGameText = sf::Text("||", font, 20);
-    pauseGameText.setStyle(sf::Text::Bold);
-    pauseGameText.setFillColor(sf::Color::White);
-    pauseGameButton = sf::RectangleShape(sf::Vector2f(30,30));
-    pauseGameButton.setFillColor(sf::Color::Black);
+    pauseButtonTexture = sf::Texture();
+    pauseButtonTexture.loadFromFile("../assets/buttons/pauseButton.png");
+    pauseButtonSprite.setTexture(pauseButtonTexture);
+    pauseButtonSprite.setScale(0.1,0.1);
 }
 
 auto MainMenu::getNewGameButton() -> sf::RectangleShape { return newGameButton; }
 
 auto MainMenu::getResumeGameButton() -> sf::RectangleShape { return resumeGameButton; }
 
-auto MainMenu::getPauseGameButton() -> sf::RectangleShape { return pauseGameButton; }
+auto MainMenu::getPauseGameButton() -> sf::Sprite { return pauseButtonSprite; }
 
 auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
 
-    headerText.setPosition((window.getSize().x)/2 - 100, (window.getSize().y)/2 - 100);
+    container.setPosition(windowCenter(window) - positionHelper(container));
+
+    headerText.setPosition(container.getPosition() + sf::Vector2f(50,50));
 
     newGameButton.setPosition(headerText.getPosition().x, headerText.getPosition().y + 100);
     newGameText.setPosition(headerText.getPosition().x + 10, headerText.getPosition().y + 100);
@@ -41,6 +46,7 @@ auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
     resumeGameButton.setPosition(headerText.getPosition().x, newGameButton.getPosition().y + 70);
     resumeGameText.setPosition(headerText.getPosition().x + 10, newGameButton.getPosition().y + 70);
 
+    window.draw(container);
     window.draw(headerText);
     window.draw(newGameButton);
     window.draw(newGameText);
@@ -50,11 +56,12 @@ auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
 }
 
 auto MainMenu::displayPauseButton(sf::RenderWindow &window) -> void {
-    pauseGameButton.setPosition(0,0);
-    pauseGameText.setPosition(0,0);
-    window.draw(pauseGameButton);
-    window.draw(pauseGameText);
+    pauseButtonSprite.setPosition(0,0);
+    window.draw(pauseButtonSprite);
+
 }
 
-
+auto MainMenu::windowCenter(const sf::Window &window) -> sf::Vector2f {
+    return sf::Vector2f ((window.getSize().x)/2,(window.getSize().y)/2);
+}
 

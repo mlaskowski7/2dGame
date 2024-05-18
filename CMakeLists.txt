@@ -30,5 +30,5 @@ add_executable(2dGame main.cpp
         mainMenu.hpp
         mainMenu.cpp
 
-        )
+)
 target_link_libraries(2dGame fmt sfml-graphics)

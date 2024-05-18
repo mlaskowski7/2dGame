@@ -3,6 +3,10 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+
 #include "hero.hpp"
 #include "mainMenu.hpp"
 
@@ -11,9 +15,13 @@
 // ground textures, background textures were generated using DALL-E AI tool
 
 auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
+auto rightArrowAfterJumpClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
 auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
 auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
 auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void;
+
+auto generateRandomGroundObstacles(std::vector<sf::Sprite*>& groundObstacles,sf::Sprite const& ground, sf::Texture const& groundObstacleTexture) -> void;
+auto generateRandomFlyingObstacles(std::vector<sf::Sprite*>& flyingObstacles,sf::Sprite const& ground, sf::Texture const& flyingObstacleTexture) -> void;
 
 
 auto main() -> int {
@@ -24,6 +32,9 @@ auto main() -> int {
             "2D Game", sf::Style::Titlebar | sf::Style::Close,
             sf::ContextSettings(0,0, 8)
             );
+
+//    random number generator
+    std::srand(std::time(0));
 
 //    Boolean determining wheter game has started
     auto gameStarted = false;
@@ -55,9 +66,21 @@ auto main() -> int {
 //    sfml clock for animations
     auto clock = sf::Clock();
     auto lastMovementClock = sf::Clock();
+    auto deadTimeClock = sf::Clock();
 
     auto startTime = float();
 
+    auto groundObstacles = std::vector<sf::Sprite*>();
+    auto groundObstacleTexture = sf::Texture();
+    groundObstacleTexture.loadFromFile("../assets/obstacles/groundObstacle.png");
+
+
+    auto flyingObstacles = std::vector<sf::Sprite*>();
+    auto flyingObstacleTexture = sf::Texture();
+    flyingObstacleTexture.loadFromFile("../assets/obstacles/flyingObstacle.png");
+
+
+    auto heroDead = false;
 
 
 //    Game Loop
@@ -72,16 +95,25 @@ auto main() -> int {
                     auto mousePosition = sf::Mouse::getPosition(window);
                     if(mainMenu.getNewGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
                         hero.setStartingPosition(ground);
+                        generateRandomGroundObstacles(groundObstacles, ground,groundObstacleTexture);
+                        generateRandomFlyingObstacles(flyingObstacles,ground,flyingObstacleTexture);
                         gameStarted = true;
+                        heroDead = false;
                     } else if (mainMenu.getResumeGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
                         gameStarted = true;
                     } else if(mainMenu.getPauseGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
                         gameStarted = false;
                     }
                 }
-            } else if (event.type == sf::Event::KeyPressed && gameStarted) {
+            } else if (event.type == sf::Event::KeyPressed && gameStarted && !heroDead) {
                 if (event.key.code == sf::Keyboard::Left) leftArrowOnClick(hero, lastMovementClock, ground);
-                if (event.key.code == sf::Keyboard::Right) rightArrowOnClick(hero, lastMovementClock, ground);
+                if (event.key.code == sf::Keyboard::Right) {
+                    if(hero.getHeroSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y){
+                        rightArrowAfterJumpClick(hero, lastMovementClock, ground);
+                    } else{
+                        rightArrowOnClick(hero, lastMovementClock, ground);
+                    }
+                }
                 if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, lastMovementClock, ground);
                 if (event.key.code == sf::Keyboard::Down) downArrowOnClick(hero, jumpBlocked, lastMovementClock);
             }
@@ -91,10 +123,11 @@ auto main() -> int {
 
 
 //        Back to idle if standing ( prevents running when not moving )
-        if(lastMovementClock.getElapsedTime().asSeconds() > 0.5){
+        if(lastMovementClock.getElapsedTime().asSeconds() > 0.3 && !heroDead){
             if(hero.getHeroSprite().getPosition().y > ground.getPosition().y - 2*groundTexture.getSize().y){
                 hero.backFromSliding(ground);
             }
+//            fmt::println("Changing animation to idle because of last movement");
             hero.changeAnimation("Idle");
 
         }
@@ -114,6 +147,8 @@ auto main() -> int {
 //        Move hero to start if  touched the border of a window
         if(hero.getHeroSprite().getPosition().x >= window.getSize().x){
             hero.setStartingPosition(ground);
+            generateRandomGroundObstacles(groundObstacles, ground,groundObstacleTexture);
+            generateRandomFlyingObstacles(flyingObstacles, ground, flyingObstacleTexture);
         }
 
         hero.animation(startTime);
@@ -126,6 +161,29 @@ auto main() -> int {
         } else{
             mainMenu.displayPauseButton(window);
             window.draw(hero.getHeroSprite());
+
+            for(auto const& groundObstacle : groundObstacles){
+                if(groundObstacle->getGlobalBounds().intersects(hero.getHeroSprite().getGlobalBounds()) && !heroDead){
+                    hero.changeAnimation("Dead");
+                    heroDead = true;
+                    deadTimeClock.restart();
+                }
+                window.draw(*groundObstacle);
+            }
+
+            for(auto const& flyingObstacle : flyingObstacles){
+                if(flyingObstacle->getGlobalBounds().intersects(hero.getHeroSprite().getGlobalBounds()) && !heroDead){
+                    hero.changeAnimation("Dead");
+                    heroDead = true;
+                    deadTimeClock.restart();
+                }
+                window.draw(*flyingObstacle);
+            }
+        }
+
+        if(deadTimeClock.getElapsedTime().asSeconds() > 0.7 && heroDead){
+            gameStarted = false;
+            hero.setStartingPosition(ground);
         }
 
         window.display();
@@ -133,6 +191,13 @@ auto main() -> int {
 
     }
 
+    for (auto* groundObstacle : groundObstacles) {
+        delete groundObstacle;
+    }
+
+    for (auto* flyingObstacle : flyingObstacles) {
+        delete flyingObstacle;
+    }
 }
 
 auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
@@ -141,7 +206,15 @@ auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite grou
     }
     hero.changeAnimation("Run");
     lastMovementClock.restart();
-    for(auto i = 0; i < 1000; i++){
+    for(auto i = 0; i < 2000; i++){
+        hero.moveRight();
+    }
+}
+
+auto rightArrowAfterJumpClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
+    hero.changeAnimation("Glide");
+    lastMovementClock.restart();
+    for(auto i = 0; i < 2000; i++){
         hero.moveRight();
     }
 }
@@ -152,7 +225,7 @@ auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite groun
     }
     hero.changeAnimation("RunBackwards");
     lastMovementClock.restart();
-    for(auto i = 0; i < 1000; i++){
+    for(auto i = 0; i < 2000; i++){
         hero.moveLeft();
     }
 }
@@ -164,7 +237,7 @@ auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovement
     if(!jumpBlocked){
         hero.changeAnimation("Jump");
         lastMovementClock.restart();
-        for(auto i = 0; i < 8000; i++){
+        for(auto i = 0; i < 18000; i++){
             hero.jump();
         }
     }
@@ -173,10 +246,54 @@ auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovement
 auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void{
     if(!hero.isSliding && !jumpBlocked){
         hero.changeAnimation("Slide");
-        lastMovementClock.restart();
         for(auto i = 0; i < 1500; i++){
             hero.slide();
         }
+    } else if(!jumpBlocked){
+        for(auto i = 0; i < 1000; i++){
+            hero.moveRight();
+        }
     }
+    lastMovementClock.restart();
 
+}
+
+auto generateRandomGroundObstacles(std::vector<sf::Sprite*>& groundObstacles,sf::Sprite const& ground, sf::Texture const& groundObstacleTexture) -> void{
+
+    for(auto* groundObstacle : groundObstacles){
+        delete groundObstacle;
+    }
+    groundObstacles.clear();
+
+    auto numberOfObstacles = std::rand() % 3;
+    fmt::println("Generating {} ground obstacles", numberOfObstacles);
+    for(auto i = 0; i < numberOfObstacles; i++){
+        auto* obstacle = new sf::Sprite;
+        auto positionX = std::rand() % 1500;
+        auto position = sf::Vector2f(positionX + 100, ground.getPosition().y - ground.getTexture()->getSize().y);
+        obstacle->setPosition(position);
+        obstacle->setTexture(groundObstacleTexture);
+        obstacle->setScale(0.3,0.3);
+        groundObstacles.push_back(obstacle);
+    }
+}
+
+auto generateRandomFlyingObstacles(std::vector<sf::Sprite*>& flyingObstacles,sf::Sprite const& ground, sf::Texture const& flyingObstacleTexture) -> void{
+
+    for(auto* flyingObstacle : flyingObstacles){
+        delete flyingObstacle;
+    }
+    flyingObstacles.clear();
+
+    auto numberOfObstacles = std::rand() % 3;
+    fmt::println("Generating {} flying obstacles", numberOfObstacles);
+    for(auto i = 0; i < numberOfObstacles; i++){
+        auto* obstacle = new sf::Sprite;
+        auto positionX = std::rand() % 1500;
+        auto position = sf::Vector2f(positionX + 100, ground.getPosition().y - 3*ground.getTexture()->getSize().y);
+        obstacle->setPosition(position);
+        obstacle->setTexture(flyingObstacleTexture);
+        obstacle->setScale(0.2,0.2);
+        flyingObstacles.push_back(obstacle);
+    }
 }

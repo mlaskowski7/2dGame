@@ -12,9 +12,9 @@ class Hero{
     sf::Vector2f position;
 
 //    Vectors storing values of velocities for each movement
-    sf::Vector2f movementVelocity = sf::Vector2f(0.02f,0);
+    sf::Vector2f movementVelocity = sf::Vector2f(0.007f,0);
     sf::Vector2f gravityVelocity = sf::Vector2f(0,0.02f);
-    sf::Vector2f jumpingVelocity = sf::Vector2f(0.008f,-0.02f);
+    sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-0.02f);
     sf::Vector2f slideVelocity = sf::Vector2f(0.02f,0.02f);
 
 //    Animations stuff

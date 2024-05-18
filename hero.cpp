@@ -37,12 +37,12 @@ auto Hero::changeFrame(std::string const& framePath) -> void {
     heroTexture.loadFromFile(framePath);
     heroSprite.setTexture(heroTexture);
     heroSprite.setTextureRect(sf::IntRect(0,0, heroTexture.getSize().x, heroTexture.getSize().y));
-    fmt::println("Successfully changed frame to {}", framePath);
+//    fmt::println("Successfully changed frame to {}", framePath);
 }
 
 
 // Loading hero frames
-std::map<std::string,std::vector<std::string>> Hero::frames = getFramesMap();
+std::map<std::string,std::vector<std::string>> Hero::frames = getFramesMap("../assets/hero");
 
 // Hero animations methods implementation
 auto Hero::changeAnimation(std::string const& animKey) -> void{
