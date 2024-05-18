@@ -4,6 +4,8 @@
 
 class Hero{
 
+    int score;
+
 //    Hero Sprite and hero Texture
     sf::Sprite heroSprite;
     sf::Texture heroTexture;
@@ -39,6 +41,12 @@ class Hero{
 
 //        HeroSprite getter
         auto getHeroSprite() -> sf::Sprite;
+
+//        Score getter
+        auto getScore() -> int;
+
+//        Score setter
+        auto setScore(int const& newScore ) -> void;
 
 //        Void that is conducting animations
         auto animation(float const& startTime) -> void;

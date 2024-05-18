@@ -95,6 +95,7 @@ auto main() -> int {
                     auto mousePosition = sf::Mouse::getPosition(window);
                     if(mainMenu.getNewGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
                         hero.setStartingPosition(ground);
+                        hero.setScore(0);
                         generateRandomGroundObstacles(groundObstacles, ground,groundObstacleTexture);
                         generateRandomFlyingObstacles(flyingObstacles,ground,flyingObstacleTexture);
                         gameStarted = true;
@@ -156,6 +157,7 @@ auto main() -> int {
         window.clear(sf::Color::Black);
         window.draw(bg);
         window.draw(ground);
+        mainMenu.displayScore(window, hero.getScore());
         if(!gameStarted){
             mainMenu.displayMainMenu(window);
         } else{

@@ -10,6 +10,9 @@ class MainMenu{
     sf::Text resumeGameText;
     sf::Sprite pauseButtonSprite;
     sf::Texture pauseButtonTexture;
+    sf::RectangleShape scoreContainer;
+    sf::Text scoreText;
+
 
     static auto windowCenter(sf::Window const& window) -> sf::Vector2f;
 
@@ -20,4 +23,5 @@ public:
     auto getPauseGameButton() -> sf::Sprite;
     auto displayMainMenu(sf::RenderWindow& window) -> void;
     auto displayPauseButton(sf::RenderWindow& window) -> void;
+    auto displayScore(sf::RenderWindow& window, int const& score) -> void;
 };

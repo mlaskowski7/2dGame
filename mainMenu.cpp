@@ -26,6 +26,8 @@ MainMenu::MainMenu() {
     pauseButtonTexture.loadFromFile("../assets/buttons/pauseButton.png");
     pauseButtonSprite.setTexture(pauseButtonTexture);
     pauseButtonSprite.setScale(0.1,0.1);
+
+
 }
 
 auto MainMenu::getNewGameButton() -> sf::RectangleShape { return newGameButton; }
@@ -63,5 +65,17 @@ auto MainMenu::displayPauseButton(sf::RenderWindow &window) -> void {
 
 auto MainMenu::windowCenter(const sf::Window &window) -> sf::Vector2f {
     return sf::Vector2f ((window.getSize().x)/2,(window.getSize().y)/2);
+}
+
+
+auto MainMenu::displayScore(sf::RenderWindow& window, int const& score) -> void{
+    scoreContainer = sf::RectangleShape(sf::Vector2f(210,50));
+    scoreContainer.setFillColor(sf::Color(255,255,255,128));
+    scoreText = sf::Text(std::to_string(score/1000), font, 30);
+    scoreText.setFillColor(sf::Color::Black);
+    scoreContainer.setPosition(sf::Vector2f(window.getSize().x, 100) - positionHelper(scoreContainer) - positionHelper(scoreContainer));
+    scoreText.setPosition(sf::Vector2f(window.getSize().x, 100) - positionHelper(scoreContainer) - positionHelper(scoreContainer));
+    window.draw(scoreContainer);
+    window.draw(scoreText);
 }
 

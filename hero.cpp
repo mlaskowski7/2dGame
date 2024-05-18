@@ -7,6 +7,7 @@
 
 // Default constructor implementation
 Hero::Hero(){
+    score = 0;
     changeAnimation("Idle");
     isSliding = false;
     heroSprite.setScale(0.3,0.3);
@@ -21,6 +22,16 @@ auto Hero::setStartingPosition(sf::Sprite const& ground) -> void {
 // Hero sprite getter implementation
 auto Hero::getHeroSprite() -> sf::Sprite {
     return heroSprite;
+}
+
+// Score getter implementation
+auto Hero::getScore() -> int {
+    return score;
+}
+
+// Score setter implementation
+auto Hero::setScore(int const& newScore ) -> void{
+    score = newScore;
 }
 
 // Methods used to not repeat boilerplate code implementation
@@ -70,11 +81,13 @@ auto Hero::animation(float const& startTime) -> void{
 // Hero controls implementation
 auto Hero::moveRight() -> void{
     position += movementVelocity;
+    score += 1;
     updatePosition();
 }
 
 auto Hero::moveLeft() -> void{
     position -= movementVelocity;
+    score -= 1;
     updatePosition();
 }
 
