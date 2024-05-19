@@ -29,6 +29,12 @@ add_executable(2dGame main.cpp
         utilities.cpp
         mainMenu.hpp
         mainMenu.cpp
+        enemy.cpp
+        enemy.hpp
+        zombie.cpp
+        zombie.hpp
+        character.cpp
+        character.hpp
 
 )
 target_link_libraries(2dGame fmt sfml-graphics)
