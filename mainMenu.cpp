@@ -7,7 +7,7 @@ MainMenu::MainMenu() {
     container.setFillColor(sf::Color(0,0,0,128));
 
     font = sf::Font();
-    font.loadFromFile("../assets/font/RobotoMono-Italic-VariableFont_wght.ttf");
+    font.loadFromFile("../assets/font/RobotoCondensed-Italic-VariableFont_wght.ttf");
 
     headerText = sf::Text("2D Game", font, 50);
     headerText.setFillColor(sf::Color::White);
@@ -69,9 +69,9 @@ auto MainMenu::windowCenter(const sf::Window &window) -> sf::Vector2f {
 
 
 auto MainMenu::displayScore(sf::RenderWindow& window, int const& score) -> void{
-    scoreContainer = sf::RectangleShape(sf::Vector2f(210,50));
+    scoreContainer = sf::RectangleShape(sf::Vector2f(100,50));
     scoreContainer.setFillColor(sf::Color(255,255,255,128));
-    scoreText = sf::Text(std::to_string(score/1000), font, 30);
+    scoreText = sf::Text(std::to_string(score), font, 30);
     scoreText.setFillColor(sf::Color::Black);
     scoreContainer.setPosition(sf::Vector2f(window.getSize().x, 100) - positionHelper(scoreContainer) - positionHelper(scoreContainer));
     scoreText.setPosition(sf::Vector2f(window.getSize().x, 100) - positionHelper(scoreContainer) - positionHelper(scoreContainer));

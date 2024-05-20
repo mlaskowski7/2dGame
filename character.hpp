@@ -29,13 +29,14 @@ protected:
 
 //    voids used to reduce repeating boilerplate code
     auto changeFrame(std::string const& framePath) -> void;
-    auto updatePosition(sf::Vector2f const& newPosition) -> void;
     auto updatePosition() -> void;
 
     Character();
 
 public:
     auto getSprite() const -> sf::Sprite;
+
+    auto updatePosition(sf::Vector2f const& newPosition) -> void;
 
     auto animation(float const& startTime) -> void;
 

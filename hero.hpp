@@ -7,9 +7,9 @@ class Hero : public Character{
 
 //    Vectors storing values of velocities for each movement
 
-    sf::Vector2f gravityVelocity = sf::Vector2f(0,0.02f);
-    sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-0.02f);
-    sf::Vector2f slideVelocity = sf::Vector2f(0.02f,0.02f);
+    sf::Vector2f gravityVelocity = sf::Vector2f(0,3);
+    sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-100);
+    sf::Vector2f slideVelocity = sf::Vector2f(10,30);
 
 
 //    public methods used by main

@@ -6,7 +6,7 @@
 Hero::Hero() : Character(){
     frames = getFramesMap("../assets/hero");
     changeAnimation("Idle");
-    movementVelocity = sf::Vector2f(0.007f,0);
+    movementVelocity = sf::Vector2f(10,0);
     score = 0;
     isSliding = false;
 }
