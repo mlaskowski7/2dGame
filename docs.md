@@ -5,7 +5,8 @@
 * Ground texture, background texture, ground obstacle texture and flying obstacle texture were generated using DALL-E AI tool
 
 ## Data file documentation:
-1. Saved hero position
+1. high score
+2. Saved hero position
 
 
 ## Other

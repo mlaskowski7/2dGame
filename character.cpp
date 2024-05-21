@@ -13,7 +13,7 @@ auto Character::changeAnimation(std::string const& animKey) -> void{
         ongoingAnimation = animKey;
         ongoingFrame = 0;
         changeFrame(frames[ongoingAnimation][ongoingFrame]);
-        fmt::println("Changed animation to: {}", animKey);
+//        fmt::println("Changed animation to: {}", animKey);
     }
 
 }

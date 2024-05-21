@@ -1,3 +1,5 @@
 enum dataLines{
-    HERO_POSITION_SAVE = 0,
+    HIGH_SCORE = 0,
+    HERO_POSITION_SAVE = 1,
+
 };

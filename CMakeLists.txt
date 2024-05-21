@@ -37,6 +37,8 @@ add_executable(2dGame main.cpp
         character.cpp
         character.hpp
         dataFileEnum.hpp
+        firstEnemy.cpp
+        firstEnemy.hpp
 
 )
 target_link_libraries(2dGame fmt sfml-graphics)

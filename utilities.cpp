@@ -30,7 +30,7 @@ auto vector2fToString(sf::Vector2f const& vector2f) -> std::string{
     return std::to_string(vector2f.x) + ", " + std::to_string(vector2f.y);
 }
 
-auto getLine(std::fstream& file, int line) -> std::string{
+auto getLine(std::fstream& file, int const& line) -> std::string{
     auto result = std::string();
     for(auto i = 0; i <= line; i++){
         std::getline(file, result);
@@ -38,7 +38,7 @@ auto getLine(std::fstream& file, int line) -> std::string{
     return result;
 }
 
-auto setLine(std::string const& filePath, int line, std::string const& str) -> void{
+auto setLine(std::string const& filePath, int const& line, std::string const& str) -> void{
     auto file = std::fstream(filePath);
     auto currentLines = std::vector<std::string>();
     auto temp = std::string();
@@ -53,6 +53,6 @@ auto setLine(std::string const& filePath, int line, std::string const& str) -> v
     file.open(filePath, std::ios::out | std::ios::trunc);
 
     for(auto const& element : currentLines){
-        file << element;
+        file << element << "\n";
     }
 }

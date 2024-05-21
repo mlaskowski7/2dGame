@@ -1,7 +1,7 @@
 #include "mainMenu.hpp"
 #include "utilities.hpp"
 
-MainMenu::MainMenu() {
+MainMenu::MainMenu() : levelText() {
 
     container = sf::RectangleShape(sf::Vector2f(300,300));
     container.setFillColor(sf::Color(0,0,0,128));
@@ -26,8 +26,6 @@ MainMenu::MainMenu() {
     pauseButtonTexture.loadFromFile("../assets/buttons/pauseButton.png");
     pauseButtonSprite.setTexture(pauseButtonTexture);
     pauseButtonSprite.setScale(0.1,0.1);
-
-
 }
 
 auto MainMenu::getNewGameButton() -> sf::RectangleShape { return newGameButton; }
@@ -67,15 +65,43 @@ auto MainMenu::windowCenter(const sf::Window &window) -> sf::Vector2f {
     return sf::Vector2f ((window.getSize().x)/2,(window.getSize().y)/2);
 }
 
+auto MainMenu::displayHighScore(sf::RenderWindow& window, int const& highScore) -> void{
+    highScoreContainer = sf::RectangleShape(sf::Vector2f(200,50));
+    highScoreContainer.setFillColor(sf::Color(0,0,0,128));
+    highScoreText = sf::Text("High Score:" + std::to_string(highScore), font, 20);
+    highScoreText.setFillColor(sf::Color(255,255,255));
+    highScoreContainer.setPosition(sf::Vector2f(window.getSize().x, 150) - positionHelper(highScoreContainer) - positionHelper(highScoreContainer));
+    highScoreText.setPosition(sf::Vector2f(window.getSize().x, 150) - positionHelper(highScoreContainer) - positionHelper(highScoreContainer) + sf::Vector2f(10,10));
+    window.draw(highScoreContainer);
+    window.draw(highScoreText);
+}
+
 
 auto MainMenu::displayScore(sf::RenderWindow& window, int const& score) -> void{
-    scoreContainer = sf::RectangleShape(sf::Vector2f(100,50));
+    scoreContainer = sf::RectangleShape(sf::Vector2f(200,50));
     scoreContainer.setFillColor(sf::Color(255,255,255,128));
-    scoreText = sf::Text(std::to_string(score), font, 30);
+    scoreText = sf::Text("Score:" + std::to_string(score), font, 20);
     scoreText.setFillColor(sf::Color::Black);
     scoreContainer.setPosition(sf::Vector2f(window.getSize().x, 100) - positionHelper(scoreContainer) - positionHelper(scoreContainer));
-    scoreText.setPosition(sf::Vector2f(window.getSize().x, 100) - positionHelper(scoreContainer) - positionHelper(scoreContainer));
+    scoreText.setPosition(sf::Vector2f(window.getSize().x, 100) - positionHelper(scoreContainer) - positionHelper(scoreContainer) + sf::Vector2f(10,10));
     window.draw(scoreContainer);
     window.draw(scoreText);
+}
+
+auto MainMenu::displayLevel(sf::RenderWindow& window, int const& currentLevel) -> void{
+    auto text = std::string();
+    if(currentLevel < 5){
+        text = "Level Easy";
+    } else if(currentLevel < 10){
+        text = "Level Medium";
+    } else if(currentLevel <= 20){
+        text = "Level Hard";
+    } else{
+        text = "Level Hardcore";
+    }
+    levelText = sf::Text(text, font, 45);
+    levelText.setFillColor(sf::Color::White);
+    levelText.setPosition(sf::Vector2f(window.getSize().x/2, 50) - positionHelper(levelText));
+    window.draw(levelText);
 }
 

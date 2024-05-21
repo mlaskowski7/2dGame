@@ -3,6 +3,7 @@
 
 class Hero : public Character{
 
+    std::string gender;
     int score;
 
 //    Vectors storing values of velocities for each movement
@@ -15,10 +16,8 @@ class Hero : public Character{
 
     bool isDead;
 
-
 //    public methods used by main
     public:
-//        Default constructor
         Hero();
 
 //        New game hero init

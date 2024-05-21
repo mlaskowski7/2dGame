@@ -4,7 +4,7 @@
 
 // Default constructor implementation
 Hero::Hero() : Character(), deadTimeClock(){
-    frames = getFramesMap("../assets/hero");
+    frames = getFramesMap("../assets/hero/male");
     changeAnimation("Idle");
     movementVelocity = sf::Vector2f(10,0);
     score = 0;
@@ -39,6 +39,7 @@ auto Hero::getDeadTimeClock() const -> sf::Clock{
 auto Hero::kill() -> void{
     changeAnimation("Dead");
     isDead = true;
+    fmt::println("Hero isDead: {}", isDead);
     deadTimeClock.restart();
 }
 
