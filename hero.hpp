@@ -9,7 +9,11 @@ class Hero : public Character{
 
     sf::Vector2f gravityVelocity = sf::Vector2f(0,3);
     sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-100);
-    sf::Vector2f slideVelocity = sf::Vector2f(10,30);
+    sf::Vector2f slideVelocity = sf::Vector2f(7,30);
+
+    sf::Clock deadTimeClock;
+
+    bool isDead;
 
 
 //    public methods used by main
@@ -17,11 +21,21 @@ class Hero : public Character{
 //        Default constructor
         Hero();
 
+//        New game hero init
+        auto newGame(sf::Sprite const& ground) -> void;
+
 //        Score getter
         auto getScore() const -> int;
 
 //        Score setter
         auto setScore(int const& newScore ) -> void;
+
+        auto getIsDead() const -> bool;
+
+        auto getDeadTimeClock() const -> sf::Clock;
+
+//      void used to kill hero
+        auto kill() -> void;
 
 //        Hero gravity (fall when not touching ground)
         auto gravityEffect() -> void;
@@ -31,6 +45,8 @@ class Hero : public Character{
         auto moveLeft() -> void;
         auto jump() -> void;
         auto slide() -> void;
+
+        auto backToIdle(sf::Sprite const& ground) -> void;
 
 //        Void used to return hero from sliding position
         auto backFromSliding(sf::Sprite const& ground) -> void;

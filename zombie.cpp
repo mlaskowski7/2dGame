@@ -13,7 +13,7 @@ Zombie::Zombie(std::string const& zombieGender) : Character(), clock(){
 
 auto Zombie::setStartingPosition(sf::Sprite const& ground) -> void {
     if(gender == "male"){
-        updatePosition(sf::Vector2f(1,ground.getPosition().y - 2.2*ground.getTexture()->getSize().y));
+        updatePosition(sf::Vector2f(1,ground.getPosition().y - 2.25*ground.getTexture()->getSize().y));
     } else{
         updatePosition(sf::Vector2f(1,ground.getPosition().y - 2.5*ground.getTexture()->getSize().y));
     }
