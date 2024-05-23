@@ -19,9 +19,10 @@ class MainMenu{
     sf::Texture manualButtonTexture;
     sf::Sprite manualSprite;
     sf::Texture manualTexture;
+    sf::Text gameOverText;
+    sf::Text deadMessageText;
 
     bool isManualDisplayed;
-    bool isGameOver;
 
     static auto windowCenter(sf::Window const& window) -> sf::Vector2f;
 
@@ -33,11 +34,10 @@ public:
     auto getPauseGameButton() const -> sf::Sprite;
     auto getIsManualDisplayed() const -> bool;
     auto setIsManualDisplayed(bool const& value) -> void;
-    auto getGameOver() const -> bool;
-    auto setGameOver(bool const& value) -> void;
     auto displayMainMenu(sf::RenderWindow& window) -> void;
     auto displayPauseButton(sf::RenderWindow& window) -> void;
     auto displayHighScore(sf::RenderWindow& window, int const& highScore) -> void;
     auto displayScore(sf::RenderWindow& window, int const& score) -> void;
     auto displayLevel(sf::RenderWindow& window, int const& currentLevel) -> void;
+    auto displayGameOver(sf::RenderWindow& window, std::string const& deadMessage) -> void;
 };

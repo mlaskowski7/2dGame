@@ -101,9 +101,6 @@ auto main() -> int {
     auto levelClock = sf::Clock();
 //    clock used to track hero's last movement so that the hero goes back to idle when movement is finished
     auto lastMovementClock = sf::Clock();
-//    clock used to track time after game over
-    auto gameOverClock = sf::Clock();
-
 
 //    time used for conducting animations
     auto startTime = float();
@@ -123,6 +120,9 @@ auto main() -> int {
     auto bushes = std::vector<sf::Sprite*>();
     auto bushTexture = sf::Texture();
     bushTexture.loadFromFile("../assets/obstacles/bush.png");
+
+//    dead message displayed after game over
+    auto deadMessage = std::string();
 
 
 //    Game Loop
@@ -239,6 +239,7 @@ auto main() -> int {
                 fmt::println("first enemy killing clock {}", firstEnemyPointer->killingClock.getElapsedTime().asMilliseconds());
                 if(firstEnemyPointer->killing && firstEnemyPointer->killingClock.getElapsedTime().asSeconds() >= 0.7){
                     hero.kill(ground);
+                    deadMessage = "Killed by enemy ninja";
                 }
 
             }
@@ -267,6 +268,7 @@ auto main() -> int {
             if(zombiePointer->getSprite().getGlobalBounds().intersects(hero.getSprite().getGlobalBounds())){
                 zombiePointer->changeAnimation("Attack");
                 hero.kill(ground);
+                deadMessage = "Killed by zombie";
             }
         }
 
@@ -279,9 +281,9 @@ auto main() -> int {
         mainMenu.displayHighScore(window,highScore);
         mainMenu.displayScore(window, hero.getScore());
         checkHighScore("../data.txt",hero.getScore(),highScore);
-        if(!gameStarted){
+        if(!gameStarted && !hero.getIsDead()){
             mainMenu.displayMainMenu(window);
-        } else{
+        } else if(!hero.getIsDead()){
             mainMenu.displayPauseButton(window);
             mainMenu.displayLevel(window, currentLevel);
             window.draw(hero.getSprite());
@@ -301,6 +303,7 @@ auto main() -> int {
             for(auto const& groundObstacle : groundObstacles){
                 if(groundObstacle->getGlobalBounds().intersects(hero.getSprite().getGlobalBounds()) && !hero.getIsDead()){
                     hero.kill(ground);
+                    deadMessage = "Hit ground obstacle";
                 }
                 window.draw(*groundObstacle);
             }
@@ -309,6 +312,7 @@ auto main() -> int {
             for(auto const& flyingObstacle : flyingObstacles){
                 if(flyingObstacle->getGlobalBounds().intersects(hero.getSprite().getGlobalBounds()) && !hero.getIsDead()){
                     hero.kill(ground);
+                    deadMessage = "Hit flying obstacle";
                 }
                 window.draw(*flyingObstacle);
             }
@@ -328,6 +332,14 @@ auto main() -> int {
                 }
             }
         }
+
+        if(hero.getDeadTimeClock().getElapsedTime().asSeconds() < 2 && hero.getIsDead()){
+            mainMenu.displayGameOver(window, deadMessage);
+        } else if(hero.getDeadTimeClock().getElapsedTime().asSeconds() > 2 && hero.getIsDead()){
+            hero.setIsDead(false);
+            hero.updateVelocity(sf::Vector2f(10,0));
+        }
+
 
 //        finish game when hero has been killed ( 0.7 seconds later so that dead animation is fully conducted )
         if(hero.getDeadTimeClock().getElapsedTime().asSeconds() > 0.7 && hero.getIsDead() && gameStarted){

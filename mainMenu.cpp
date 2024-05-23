@@ -13,6 +13,14 @@ MainMenu::MainMenu() : levelText(), isManualDisplayed() {
     headerText.setFillColor(sf::Color::White);
     headerText.setStyle(sf::Text::Bold);
 
+    gameOverText = sf::Text("Game Over", font, 50);
+    gameOverText.setFillColor(sf::Color::Red);
+    gameOverText.setStyle(sf::Text::Bold);
+
+    deadMessageText = sf::Text("Dead message", font, 25);
+    deadMessageText.setFillColor(sf::Color::Red);
+    deadMessageText.setStyle(sf::Text::Bold);
+
     newGameText = sf::Text("New Game", font, 30);
     newGameText.setFillColor(sf::Color::White);
     newGameButton = sf::RectangleShape(sf::Vector2f(210,50));
@@ -52,14 +60,6 @@ auto MainMenu::setIsManualDisplayed(bool const& value) -> void{
     isManualDisplayed = value;
 }
 
-auto MainMenu::getGameOver() const -> bool {
-    return isGameOver;
-}
-
-auto MainMenu::setGameOver(bool const& value) -> void {
-    isGameOver = value;
-}
-
 auto MainMenu::getPauseGameButton() const-> sf::Sprite { return pauseButtonSprite; }
 
 auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
@@ -74,7 +74,7 @@ auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
     resumeGameButton.setPosition(headerText.getPosition().x, newGameButton.getPosition().y + 70);
     resumeGameText.setPosition(headerText.getPosition().x + 10, newGameButton.getPosition().y + 70);
 
-    manualButtonSprite.setPosition(10,10);
+    manualButtonSprite.setPosition(10,20);
 
     manualSprite.setPosition(windowCenter(window) - positionHelper(manualSprite));
 
@@ -95,7 +95,7 @@ auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
 }
 
 auto MainMenu::displayPauseButton(sf::RenderWindow &window) -> void {
-    pauseButtonSprite.setPosition(10,10);
+    pauseButtonSprite.setPosition(10,20);
     window.draw(pauseButtonSprite);
 
 }
@@ -144,3 +144,11 @@ auto MainMenu::displayLevel(sf::RenderWindow& window, int const& currentLevel) -
     window.draw(levelText);
 }
 
+auto MainMenu::displayGameOver(sf::RenderWindow &window, std::string const& deadMessage) -> void {
+    gameOverText.setPosition(windowCenter(window) - positionHelper(gameOverText));
+    deadMessageText = sf::Text(deadMessage, font, 25);
+    deadMessageText.setFillColor(sf::Color::Red);
+    deadMessageText.setPosition(sf::Vector2f(windowCenter(window).x,gameOverText.getPosition().y + 50) - sf::Vector2f(positionHelper(deadMessageText).x,-20));
+    window.draw(gameOverText);
+    window.draw(deadMessageText);
+}

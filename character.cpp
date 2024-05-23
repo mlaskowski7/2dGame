@@ -11,6 +11,11 @@ Character::Character() : deadTimeClock(){
 auto Character::getIsDead() const -> bool{
     return isDead;
 }
+
+auto Character::setIsDead(bool const& value) -> void {
+    isDead = value;
+}
+
 auto Character::getDeadTimeClock() const -> sf::Clock{
     return deadTimeClock;
 }

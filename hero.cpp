@@ -29,7 +29,7 @@ auto Hero::setScore(int const& newScore ) -> void{
 
 auto Hero::slow() -> void {
     if(!isSlowed){
-        movementVelocity -= sf::Vector2f(4.5,0);
+        movementVelocity -= sf::Vector2f(3.5,0);
         fmt::println("Hero movement velocity changed to {}", movementVelocity.x);
         isSlowed = true;
         slowedClock.restart();
@@ -39,7 +39,7 @@ auto Hero::slow() -> void {
 
 auto Hero::unslow() -> void {
     if(isSlowed && slowedClock.getElapsedTime().asSeconds() > 5){
-        movementVelocity += sf::Vector2f(4.5,0);
+        movementVelocity += sf::Vector2f(3.5,0);
         fmt::println("Hero movement velocity changed to {}", movementVelocity.x);
         isSlowed = false;
     }

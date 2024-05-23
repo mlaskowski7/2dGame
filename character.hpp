@@ -43,6 +43,8 @@ public:
 
     auto getIsDead() const -> bool;
 
+    auto setIsDead(bool const& value) -> void;
+
     auto getDeadTimeClock() const -> sf::Clock;
 
     auto updatePosition(sf::Vector2f const& newPosition) -> void;
