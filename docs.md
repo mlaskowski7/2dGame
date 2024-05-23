@@ -4,6 +4,13 @@
 * Hero textures were taken from https://www.gameart2d.com/
 * Ground texture, background texture, ground obstacle texture and flying obstacle texture were generated using DALL-E AI tool
 
+## Controls
+* Right arrow -> run
+* Left arrow -> run backwards
+* Down arrow -> slide
+* Up arrow -> jump
+* Q -> melee attack
+
 ## Data file documentation:
 1. high score
 2. Saved hero position

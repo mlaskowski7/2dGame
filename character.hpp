@@ -21,6 +21,9 @@ protected:
 //    character's movement velocity
     sf::Vector2f movementVelocity;
 
+    bool isDead;
+    sf::Clock deadTimeClock;
+
 //    animations stuff
     std::string ongoingAnimation = "Non";
     float timer;
@@ -36,6 +39,10 @@ protected:
 public:
     auto getSprite() const -> sf::Sprite;
 
+    auto getIsDead() const -> bool;
+
+    auto getDeadTimeClock() const -> sf::Clock;
+
     auto updatePosition(sf::Vector2f const& newPosition) -> void;
 
     auto animation(float const& startTime) -> void;
@@ -43,6 +50,8 @@ public:
     auto changeAnimation(std::string const& animKey) -> void;
 
     virtual auto setStartingPosition(sf::Sprite const& ground) -> void;
+
+    virtual auto updateVelocity(sf::Vector2f const& newVelocity) -> void;
 
 };
 

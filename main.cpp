@@ -17,7 +17,7 @@
 
 
 // main menu on click functions declaration
-auto newGameOnclick(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, bool& gameStarted, std::vector<Zombie*>& zombies) -> void;
+auto newGameOnclick(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, bool& gameStarted, Zombie*& zombiePointer) -> void;
 
 // data file integration methods
 auto saveGame(Hero const& hero) -> void;
@@ -30,14 +30,15 @@ auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite groun
 auto leftArrowAfterJumpClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
 auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
 auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void;
+auto qOnClick(Hero& hero, sf::Sprite const& ground,sf::Clock& lastMovementClock, FirstEnemy*& firstEnemy) -> void;
 
 // game state management functions
-auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, std::vector<Zombie*>& zombies, int& currentLevel) -> void;
+auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, Zombie*& zombiePointer, int& currentLevel) -> void;
 
 // functions used to randomly generate obstacles and enemies
 auto generateRandomGroundObstacles(std::vector<sf::Sprite*>& groundObstacles,sf::Sprite const& ground, sf::Texture const& groundObstacleTexture) -> void;
 auto generateRandomFlyingObstacles(std::vector<sf::Sprite*>& flyingObstacles,std::vector<sf::Sprite*> groundObstacles,sf::Sprite const& ground, sf::Texture const& flyingObstacleTexture) -> void;
-auto generateZombie(std::vector<Zombie*>& zombies,sf::Sprite const& ground) -> void;
+auto generateZombie(Zombie*& zombiePointer,sf::Sprite const& ground) -> void;
 auto generateFirstEnemy(sf::Sprite const& ground, FirstEnemy*& firstEnemyPointer) -> void;
 
 
@@ -81,8 +82,8 @@ auto main() -> int {
     auto hero = Hero();
     hero.setStartingPosition(ground);
 
-//    Vector of zombie pointers
-    auto zombies = std::vector<Zombie*>();
+//    Place for zombie pointer ( nullptr when no zombie )
+    Zombie* zombiePointer = nullptr;
 
 //    Place for firstEnemy pointer ( nullptr when no firstEnemy)
     FirstEnemy* firstEnemyPointer = nullptr;
@@ -129,7 +130,7 @@ auto main() -> int {
                 if(event.mouseButton.button == sf::Mouse::Left){
                     auto mousePosition = sf::Mouse::getPosition(window);
                     if(mainMenu.getNewGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted){
-                        newGameOnclick(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,gameStarted,zombies);
+                        newGameOnclick(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,gameStarted,zombiePointer);
                     } else if (mainMenu.getResumeGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted){
                         gameStarted = true;
                     } else if(mainMenu.getPauseGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
@@ -163,6 +164,11 @@ auto main() -> int {
                 if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, lastMovementClock, ground);
 //                Slide
                 if (event.key.code == sf::Keyboard::Down) downArrowOnClick(hero,jumpBlocked,lastMovementClock);
+
+//                Hero attacks controls
+                if(event.key.code == sf::Keyboard::Q) qOnClick(hero, ground, lastMovementClock, firstEnemyPointer);
+
+
             }
         }
 
@@ -180,7 +186,7 @@ auto main() -> int {
 
 //        Next level handling when hero is touching and of the window
         if(hero.getSprite().getPosition().x >= window.getSize().x){
-            nextLevel(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,levelClock,zombies, currentLevel);
+            nextLevel(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,levelClock,zombiePointer, currentLevel);
             if(firstEnemyPointer != nullptr){
                 delete firstEnemyPointer;
                 firstEnemyPointer = nullptr;
@@ -200,33 +206,45 @@ auto main() -> int {
 
         if(firstEnemyPointer != nullptr){
 //              Kill hero on collision with first enemy
-            if(firstEnemyPointer->getSprite().getGlobalBounds().intersects(hero.getSprite().getGlobalBounds()) && !hero.getIsDead()){
+            if(firstEnemyPointer->getSprite().getGlobalBounds().intersects(hero.getSprite().getGlobalBounds()) && !hero.getIsDead() && !firstEnemyPointer->getIsDead()){
                 fmt::println("Detected collision between firstEnemy and hero");
                 firstEnemyPointer->changeAnimation("JumpAttack");
-                hero.kill();
+                if(!firstEnemyPointer->killing){
+                    firstEnemyPointer->killingClock.restart();
+                    firstEnemyPointer->killing = true;
+                    fmt::println("first enemy killing clock restarted");
+                }
+                fmt::println("first enemy killing clock {}", firstEnemyPointer->killingClock.getElapsedTime().asMilliseconds());
+                if(firstEnemyPointer->killing && firstEnemyPointer->killingClock.getElapsedTime().asSeconds() >= 0.7){
+                    hero.kill(ground);
+                }
+
+            }
+
+            if(firstEnemyPointer->getIsDead() && firstEnemyPointer->getDeadTimeClock().getElapsedTime().asSeconds() > 0.5){
+                delete firstEnemyPointer;
+                firstEnemyPointer = nullptr;
             }
         }
 
 //        enabling zombie movement and killing hero func after one second of a level
-        if(levelClock.getElapsedTime().asSeconds() > 1 && zombies.size() > 0 && !hero.getIsDead()){
+        if(levelClock.getElapsedTime().asSeconds() > 1 && zombiePointer != nullptr && !hero.getIsDead()){
 //            collision system between zombie and ground obstacle or hero
-            for(auto* zombie : zombies ){
-                zombie->move();
-                for(auto i = groundObstacles.begin(); i != groundObstacles.end();){
-                    auto* current = *i;
-                    if(zombie->getSprite().getGlobalBounds().intersects(current->getGlobalBounds())){
-                        zombie->changeAnimation("Attack");
-                        i = groundObstacles.erase(i);
-                        delete current;
-                        zombie->restartZombieClock();
-                    } else{
-                        i++;
-                    }
+            zombiePointer->move();
+            for(auto i = groundObstacles.begin(); i != groundObstacles.end();){
+                auto* current = *i;
+                if(zombiePointer->getSprite().getGlobalBounds().intersects(current->getGlobalBounds())){
+                    zombiePointer->changeAnimation("Attack");
+                    i = groundObstacles.erase(i);
+                    delete current;
+                    zombiePointer->restartZombieClock();
+                } else{
+                    i++;
                 }
-                if(zombie->getSprite().getGlobalBounds().intersects(hero.getSprite().getGlobalBounds())){
-                    zombie->changeAnimation("Attack");
-                    hero.kill();
-                }
+            }
+            if(zombiePointer->getSprite().getGlobalBounds().intersects(hero.getSprite().getGlobalBounds())){
+                zombiePointer->changeAnimation("Attack");
+                hero.kill(ground);
             }
         }
 
@@ -246,10 +264,10 @@ auto main() -> int {
             mainMenu.displayLevel(window, currentLevel);
             window.draw(hero.getSprite());
 
-//            loop drawing zombies and conducting their animations
-            for(auto* zombie : zombies){
-                zombie->animation(startTime);
-                window.draw(zombie->getSprite());
+//            drawing zombie if not nullptr
+            if(zombiePointer != nullptr){
+                zombiePointer->animation(startTime);
+                window.draw(zombiePointer->getSprite());
             }
 
             if(firstEnemyPointer != nullptr){
@@ -260,7 +278,7 @@ auto main() -> int {
 //            loop checking whether hero has hit any ground obstacle and drawing ground obstacles
             for(auto const& groundObstacle : groundObstacles){
                 if(groundObstacle->getGlobalBounds().intersects(hero.getSprite().getGlobalBounds()) && !hero.getIsDead()){
-                    hero.kill();
+                    hero.kill(ground);
                 }
                 window.draw(*groundObstacle);
             }
@@ -268,27 +286,24 @@ auto main() -> int {
 //            loop checking whether hero has hit any flying obstacle and drawing glying obstacles
             for(auto const& flyingObstacle : flyingObstacles){
                 if(flyingObstacle->getGlobalBounds().intersects(hero.getSprite().getGlobalBounds()) && !hero.getIsDead()){
-                    hero.kill();
+                    hero.kill(ground);
                 }
                 window.draw(*flyingObstacle);
             }
         }
 
-        fmt::println("hero dead time clock - {}", hero.getDeadTimeClock().getElapsedTime().asSeconds());
-
 //        finish game when hero has been killed ( 0.7 seconds later so that dead animation is fully conducted )
         if(hero.getDeadTimeClock().getElapsedTime().asSeconds() > 0.7 && hero.getIsDead() && gameStarted){
-            fmt::println("Im here!!!!!!!!!!!!!!!!");
             gameStarted = false;
             currentLevel = 0;
             if(firstEnemyPointer != nullptr){
                 delete firstEnemyPointer;
                 firstEnemyPointer = nullptr;
             }
-            for(auto* zombie : zombies){
-                delete zombie;
+            if(zombiePointer != nullptr){
+                delete zombiePointer;
+                zombiePointer = nullptr;
             }
-            zombies.clear();
 
             for (auto* groundObstacle : groundObstacles) {
                 delete groundObstacle;
@@ -306,11 +321,11 @@ auto main() -> int {
 
     }
 
-//    clear pointers vectors to prevent dangling memory
-    for(auto* zombie : zombies){
-        delete zombie;
+//    clear pointers to prevent dangling memory
+    if(zombiePointer != nullptr){
+        delete zombiePointer;
+        zombiePointer = nullptr;
     }
-    zombies.clear();
 
     for (auto* groundObstacle : groundObstacles) {
         delete groundObstacle;
@@ -322,15 +337,18 @@ auto main() -> int {
     }
     flyingObstacles.clear();
 
-    delete firstEnemyPointer;
-    firstEnemyPointer = nullptr;
+    if(firstEnemyPointer != nullptr){
+        delete firstEnemyPointer;
+        firstEnemyPointer = nullptr;
+    }
+
 }
 
-auto newGameOnclick(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, bool& gameStarted, std::vector<Zombie*>& zombies) -> void{
-    for(auto* zombie : zombies){
-        delete zombie;
+auto newGameOnclick(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, bool& gameStarted, Zombie*& zombiePointer) -> void{
+    if(zombiePointer != nullptr){
+        delete zombiePointer;
+        zombiePointer = nullptr;
     }
-    zombies.clear();
     generateRandomGroundObstacles(groundObstacles, ground,groundObstacleTexture);
     generateRandomFlyingObstacles(flyingObstacles, groundObstacles,ground,flyingObstacleTexture);
     gameStarted = true;
@@ -350,12 +368,12 @@ auto checkHighScore(std::string const& dataFilePath,int const& score, int& highS
     }
 }
 
-auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, std::vector<Zombie*>& zombies, int& currentLevel) -> void{
+auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, Zombie*& zombiePointer, int& currentLevel) -> void{
     hero.setStartingPosition(ground);
     generateRandomGroundObstacles(groundObstacles, ground,groundObstacleTexture);
     generateRandomFlyingObstacles(flyingObstacles, groundObstacles, ground, flyingObstacleTexture);
 //            generate zombie
-    generateZombie(zombies, ground);
+    generateZombie(zombiePointer, ground);
     currentLevel++;
     levelClock.restart();
 }
@@ -411,6 +429,18 @@ auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMoveme
     }
     lastMovementClock.restart();
 
+}
+
+auto qOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock, FirstEnemy*& firstEnemy) -> void{
+    if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*ground.getTexture()->getSize().y){
+        hero.changeAnimation("Jump_Attack");
+    } else{
+        hero.changeAnimation("Attack");
+    }
+    if(firstEnemy != nullptr && firstEnemy->getSprite().getPosition().x - hero.getSprite().getPosition().x <= 170){
+        firstEnemy->kill();
+    }
+    lastMovementClock.restart();
 }
 
 auto generateRandomGroundObstacles(std::vector<sf::Sprite*>& groundObstacles,sf::Sprite const& ground, sf::Texture const& groundObstacleTexture) -> void{
@@ -477,21 +507,16 @@ auto generateRandomFlyingObstacles(std::vector<sf::Sprite*>& flyingObstacles, st
     }
 }
 
-auto generateZombie(std::vector<Zombie*>& zombies, sf::Sprite const& ground) -> void{
-    for(auto* zombie : zombies){
-        delete zombie;
+auto generateZombie(Zombie*& zombiePointer, sf::Sprite const& ground) -> void{
+    if(zombiePointer != nullptr){
+        delete zombiePointer;
+        zombiePointer = nullptr;
     }
-    zombies.clear();
 
     if(std::rand() %  2 == 0){
-        for(auto i = 0; i <= std::rand() % 2; i++){
-            auto* zombie = new Zombie(std::rand() % 2 == 0 ? "male" : "female");
-            zombie->setZombieIndex(i);
-            zombie->setStartingPosition(ground);
-            zombies.push_back(zombie);
-            fmt::println("Generated zombie");
-        }
-
+        auto* zombie = new Zombie(std::rand() % 2 == 0 ? "male" : "female");
+        zombie->setStartingPosition(ground);
+        zombiePointer = zombie;
     }
 }
 

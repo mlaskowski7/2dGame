@@ -1,6 +1,6 @@
 #include "firstEnemy.hpp"
 
-FirstEnemy::FirstEnemy() : Character(){
+FirstEnemy::FirstEnemy() : Character(), killingClock(), killing(){
     frames = getFramesMap("../assets/firstEnemyBackwards");
     changeAnimation("Idle");
     movementVelocity = sf::Vector2f (1,0);
@@ -9,4 +9,11 @@ FirstEnemy::FirstEnemy() : Character(){
 auto FirstEnemy::setStartingPosition(const sf::Sprite &ground) -> void {
     updatePosition(sf::Vector2f(1500, ground.getPosition().y - 2.25*ground.getTexture()->getSize().y));
     fmt::println("firstEnemy position set to x = {}, y = {}",sprite.getPosition().x,sprite.getPosition().y);
+}
+
+auto FirstEnemy::kill() -> void {
+    fmt::println("first enemy killed called");
+    isDead = true;
+    changeAnimation("Dead");
+    deadTimeClock.restart();
 }

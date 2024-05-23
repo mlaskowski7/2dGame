@@ -1,10 +1,18 @@
 #include "character.hpp"
 
-Character::Character() {
+Character::Character() : deadTimeClock(){
     sprite.setScale(0.3,0.3);
     timer = 0.0f;
     ongoingFrame = 0;
+    isDead = false;
     fmt::println("Character initialized successfully");
+}
+
+auto Character::getIsDead() const -> bool{
+    return isDead;
+}
+auto Character::getDeadTimeClock() const -> sf::Clock{
+    return deadTimeClock;
 }
 
 auto Character::changeAnimation(std::string const& animKey) -> void{
@@ -49,5 +57,12 @@ auto Character::getSprite() const -> sf::Sprite {
 }
 
 auto Character::setStartingPosition(const sf::Sprite &ground) -> void {
+
+}
+
+auto Character::updateVelocity(sf::Vector2f const& newVelocity) -> void {
+    if(movementVelocity != newVelocity){
+        movementVelocity = newVelocity;
+    }
 
 }

@@ -3,13 +3,12 @@
 
 
 // Default constructor implementation
-Hero::Hero() : Character(), deadTimeClock(){
+Hero::Hero() : Character(){
     frames = getFramesMap("../assets/hero/male");
     changeAnimation("Idle");
     movementVelocity = sf::Vector2f(10,0);
     score = 0;
     isSliding = false;
-    isDead = false;
 }
 
 auto Hero::newGame(sf::Sprite const& ground) -> void{
@@ -28,15 +27,10 @@ auto Hero::setScore(int const& newScore ) -> void{
     score = newScore;
 }
 
-auto Hero::getIsDead() const -> bool{
-    return isDead;
-}
-
-auto Hero::getDeadTimeClock() const -> sf::Clock{
-    return deadTimeClock;
-}
-
-auto Hero::kill() -> void{
+auto Hero::kill(sf::Sprite const& ground) -> void{
+    if(isSliding){
+        backFromSliding(ground);
+    }
     changeAnimation("Dead");
     isDead = true;
     fmt::println("Hero isDead: {}", isDead);
@@ -67,6 +61,7 @@ auto Hero::slide() -> void{
     } else{
         position += slideVelocity;
     }
+    score += 1;
 
     updatePosition();
 }

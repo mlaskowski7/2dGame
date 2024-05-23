@@ -12,10 +12,6 @@ class Hero : public Character{
     sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-100);
     sf::Vector2f slideVelocity = sf::Vector2f(7,30);
 
-    sf::Clock deadTimeClock;
-
-    bool isDead;
-
 //    public methods used by main
     public:
         Hero();
@@ -29,12 +25,8 @@ class Hero : public Character{
 //        Score setter
         auto setScore(int const& newScore ) -> void;
 
-        auto getIsDead() const -> bool;
-
-        auto getDeadTimeClock() const -> sf::Clock;
-
 //      void used to kill hero
-        auto kill() -> void;
+        auto kill(sf::Sprite const& ground) -> void;
 
 //        Hero gravity (fall when not touching ground)
         auto gravityEffect() -> void;
