@@ -25,6 +25,10 @@ auto positionHelper(sf::RectangleShape const& element)-> sf::Vector2f{
 auto positionHelper(sf::Text const& element)-> sf::Vector2f{
     return sf::Vector2f(element.getLocalBounds().width/2, element.getLocalBounds().height/2);
 }
+auto positionHelper(sf::Sprite const& element) -> sf::Vector2f {
+    return sf::Vector2f(element.getLocalBounds().width/2, element.getLocalBounds().height/2);
+}
+
 
 auto vector2fToString(sf::Vector2f const& vector2f) -> std::string{
     return std::to_string(vector2f.x) + ", " + std::to_string(vector2f.y);

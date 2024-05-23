@@ -6,6 +6,10 @@ class Hero : public Character{
     std::string gender;
     int score;
 
+//    slowing hero func
+    bool isSlowed;
+    sf::Clock slowedClock;
+
 //    Vectors storing values of velocities for each movement
 
     sf::Vector2f gravityVelocity = sf::Vector2f(0,3);
@@ -27,6 +31,13 @@ class Hero : public Character{
 
 //      void used to kill hero
         auto kill(sf::Sprite const& ground) -> void;
+
+//        void used to slow hero when hittitng bush
+        auto slow() -> void;
+
+//        void used to undo slowing
+        auto unslow() -> void;
+
 
 //        Hero gravity (fall when not touching ground)
         auto gravityEffect() -> void;

@@ -39,6 +39,8 @@ protected:
 public:
     auto getSprite() const -> sf::Sprite;
 
+    auto getOngoingAnimation() const -> std::string;
+
     auto getIsDead() const -> bool;
 
     auto getDeadTimeClock() const -> sf::Clock;

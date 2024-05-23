@@ -15,15 +15,26 @@ class MainMenu{
     sf::RectangleShape scoreContainer;
     sf::Text scoreText;
     sf::Text levelText;
+    sf::Sprite manualButtonSprite;
+    sf::Texture manualButtonTexture;
+    sf::Sprite manualSprite;
+    sf::Texture manualTexture;
 
+    bool isManualDisplayed;
+    bool isGameOver;
 
     static auto windowCenter(sf::Window const& window) -> sf::Vector2f;
 
 public:
     MainMenu();
-    auto getNewGameButton() -> sf::RectangleShape;
-    auto getResumeGameButton() -> sf::RectangleShape;
-    auto getPauseGameButton() -> sf::Sprite;
+    auto getNewGameButton() const -> sf::RectangleShape;
+    auto getResumeGameButton() const -> sf::RectangleShape;
+    auto getManualButton() const -> sf::Sprite;
+    auto getPauseGameButton() const -> sf::Sprite;
+    auto getIsManualDisplayed() const -> bool;
+    auto setIsManualDisplayed(bool const& value) -> void;
+    auto getGameOver() const -> bool;
+    auto setGameOver(bool const& value) -> void;
     auto displayMainMenu(sf::RenderWindow& window) -> void;
     auto displayPauseButton(sf::RenderWindow& window) -> void;
     auto displayHighScore(sf::RenderWindow& window, int const& highScore) -> void;

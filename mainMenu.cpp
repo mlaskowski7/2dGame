@@ -1,7 +1,7 @@
 #include "mainMenu.hpp"
 #include "utilities.hpp"
 
-MainMenu::MainMenu() : levelText() {
+MainMenu::MainMenu() : levelText(), isManualDisplayed() {
 
     container = sf::RectangleShape(sf::Vector2f(300,300));
     container.setFillColor(sf::Color(0,0,0,128));
@@ -25,14 +25,42 @@ MainMenu::MainMenu() : levelText() {
     pauseButtonTexture = sf::Texture();
     pauseButtonTexture.loadFromFile("../assets/buttons/pauseButton.png");
     pauseButtonSprite.setTexture(pauseButtonTexture);
-    pauseButtonSprite.setScale(0.1,0.1);
+    pauseButtonSprite.setScale(0.5,0.5);
+
+    manualButtonTexture = sf::Texture();
+    manualButtonTexture.loadFromFile("../assets/buttons/manual.png");
+    manualButtonSprite.setTexture(manualButtonTexture);
+    manualButtonSprite.setScale(0.5,0.5);
+
+    manualTexture = sf::Texture();
+    manualTexture.loadFromFile("../assets/controlsInstruction/manual.png");
+    manualSprite.setTexture(manualTexture);
 }
 
-auto MainMenu::getNewGameButton() -> sf::RectangleShape { return newGameButton; }
+auto MainMenu::getNewGameButton() const -> sf::RectangleShape { return newGameButton; }
 
-auto MainMenu::getResumeGameButton() -> sf::RectangleShape { return resumeGameButton; }
+auto MainMenu::getResumeGameButton() const -> sf::RectangleShape { return resumeGameButton; }
 
-auto MainMenu::getPauseGameButton() -> sf::Sprite { return pauseButtonSprite; }
+auto MainMenu::getManualButton() const -> sf::Sprite {
+    return manualButtonSprite;
+}
+
+auto MainMenu::getIsManualDisplayed() const -> bool{
+    return isManualDisplayed;
+}
+auto MainMenu::setIsManualDisplayed(bool const& value) -> void{
+    isManualDisplayed = value;
+}
+
+auto MainMenu::getGameOver() const -> bool {
+    return isGameOver;
+}
+
+auto MainMenu::setGameOver(bool const& value) -> void {
+    isGameOver = value;
+}
+
+auto MainMenu::getPauseGameButton() const-> sf::Sprite { return pauseButtonSprite; }
 
 auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
 
@@ -46,17 +74,28 @@ auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
     resumeGameButton.setPosition(headerText.getPosition().x, newGameButton.getPosition().y + 70);
     resumeGameText.setPosition(headerText.getPosition().x + 10, newGameButton.getPosition().y + 70);
 
-    window.draw(container);
-    window.draw(headerText);
-    window.draw(newGameButton);
-    window.draw(newGameText);
-    window.draw(resumeGameButton);
-    window.draw(resumeGameText);
+    manualButtonSprite.setPosition(10,10);
+
+    manualSprite.setPosition(windowCenter(window) - positionHelper(manualSprite));
+
+    if(!isManualDisplayed){
+        window.draw(container);
+        window.draw(headerText);
+        window.draw(newGameButton);
+        window.draw(newGameText);
+        window.draw(resumeGameButton);
+        window.draw(resumeGameText);
+    } else{
+        fmt::println("Should show manual");
+        window.draw(manualSprite);
+    }
+
+    window.draw(manualButtonSprite);
 
 }
 
 auto MainMenu::displayPauseButton(sf::RenderWindow &window) -> void {
-    pauseButtonSprite.setPosition(0,0);
+    pauseButtonSprite.setPosition(10,10);
     window.draw(pauseButtonSprite);
 
 }

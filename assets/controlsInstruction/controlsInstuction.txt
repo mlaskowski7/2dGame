@@ -1,0 +1,5 @@
+Click or hold right arrow to run
+Click or hold left arrow to run backwards
+Click up arrow to jump
+Click down arrow to slide
+Click Q to attack

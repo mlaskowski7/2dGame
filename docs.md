@@ -2,7 +2,7 @@
 
 ## Credits:
 * Hero textures were taken from https://www.gameart2d.com/
-* Ground texture, background texture, ground obstacle texture and flying obstacle texture were generated using DALL-E AI tool
+* Pause button, Manual button, Ground texture, background texture, ground obstacle texture and flying obstacle texture were generated using DALL-E AI tool
 
 ## Controls
 * Right arrow -> run

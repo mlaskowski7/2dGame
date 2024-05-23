@@ -3,7 +3,7 @@
 
 
 // Default constructor implementation
-Hero::Hero() : Character(){
+Hero::Hero() : Character(), isSlowed(), slowedClock(){
     frames = getFramesMap("../assets/hero/male");
     changeAnimation("Idle");
     movementVelocity = sf::Vector2f(10,0);
@@ -25,6 +25,24 @@ auto Hero::getScore() const -> int {
 // Score setter implementation
 auto Hero::setScore(int const& newScore ) -> void{
     score = newScore;
+}
+
+auto Hero::slow() -> void {
+    if(!isSlowed){
+        movementVelocity -= sf::Vector2f(4.5,0);
+        fmt::println("Hero movement velocity changed to {}", movementVelocity.x);
+        isSlowed = true;
+        slowedClock.restart();
+    }
+
+}
+
+auto Hero::unslow() -> void {
+    if(isSlowed && slowedClock.getElapsedTime().asSeconds() > 5){
+        movementVelocity += sf::Vector2f(4.5,0);
+        fmt::println("Hero movement velocity changed to {}", movementVelocity.x);
+        isSlowed = false;
+    }
 }
 
 auto Hero::kill(sf::Sprite const& ground) -> void{

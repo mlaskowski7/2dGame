@@ -56,6 +56,10 @@ auto Character::getSprite() const -> sf::Sprite {
     return sprite;
 }
 
+auto Character::getOngoingAnimation() const -> std::string {
+    return ongoingAnimation;
+}
+
 auto Character::setStartingPosition(const sf::Sprite &ground) -> void {
 
 }

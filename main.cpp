@@ -33,11 +33,12 @@ auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMoveme
 auto qOnClick(Hero& hero, sf::Sprite const& ground,sf::Clock& lastMovementClock, FirstEnemy*& firstEnemy) -> void;
 
 // game state management functions
-auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, Zombie*& zombiePointer, int& currentLevel) -> void;
+auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, Zombie*& zombiePointer, int& currentLevel, std::vector<sf::Sprite*>& bushes, sf::Texture const& bushTexture) -> void;
 
 // functions used to randomly generate obstacles and enemies
 auto generateRandomGroundObstacles(std::vector<sf::Sprite*>& groundObstacles,sf::Sprite const& ground, sf::Texture const& groundObstacleTexture) -> void;
 auto generateRandomFlyingObstacles(std::vector<sf::Sprite*>& flyingObstacles,std::vector<sf::Sprite*> groundObstacles,sf::Sprite const& ground, sf::Texture const& flyingObstacleTexture) -> void;
+auto generateRandomBushes(std::vector<sf::Sprite*>& bushes, sf::Texture const& bushTexture, std::vector<sf::Sprite*> groundObstacles, sf::Sprite const& ground) -> void;
 auto generateZombie(Zombie*& zombiePointer,sf::Sprite const& ground) -> void;
 auto generateFirstEnemy(sf::Sprite const& ground, FirstEnemy*& firstEnemyPointer) -> void;
 
@@ -100,6 +101,9 @@ auto main() -> int {
     auto levelClock = sf::Clock();
 //    clock used to track hero's last movement so that the hero goes back to idle when movement is finished
     auto lastMovementClock = sf::Clock();
+//    clock used to track time after game over
+    auto gameOverClock = sf::Clock();
+
 
 //    time used for conducting animations
     auto startTime = float();
@@ -116,6 +120,10 @@ auto main() -> int {
     auto flyingObstacleTexture = sf::Texture();
     flyingObstacleTexture.loadFromFile("../assets/obstacles/flyingObstacle.png");
 
+    auto bushes = std::vector<sf::Sprite*>();
+    auto bushTexture = sf::Texture();
+    bushTexture.loadFromFile("../assets/obstacles/bush.png");
+
 
 //    Game Loop
     while(window.isOpen()){
@@ -129,13 +137,21 @@ auto main() -> int {
 //                Main menu controls
                 if(event.mouseButton.button == sf::Mouse::Left){
                     auto mousePosition = sf::Mouse::getPosition(window);
-                    if(mainMenu.getNewGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted){
+                    if(mainMenu.getNewGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted && !mainMenu.getIsManualDisplayed()){
                         newGameOnclick(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,gameStarted,zombiePointer);
-                    } else if (mainMenu.getResumeGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted){
+                    } else if (mainMenu.getResumeGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted && !mainMenu.getIsManualDisplayed()){
                         gameStarted = true;
                     } else if(mainMenu.getPauseGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
                         gameStarted = false;
-                        fmt::println("game started: {}", gameStarted);
+                    } else if(mainMenu.getManualButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
+                        fmt::println("Manual button clicked");
+                        if(mainMenu.getIsManualDisplayed()){
+                            fmt::println("Manual button is true setting to false");
+                            mainMenu.setIsManualDisplayed(false);
+                        } else{
+                            fmt::println("Should set is manual displayed to true");
+                            mainMenu.setIsManualDisplayed(true);
+                        }
                     }
                 }
             } else if (event.type == sf::Event::KeyPressed && gameStarted && !hero.getIsDead()) {
@@ -184,15 +200,21 @@ auto main() -> int {
             hero.isSliding = false;
         }
 
+        hero.unslow();
+
 //        Next level handling when hero is touching and of the window
         if(hero.getSprite().getPosition().x >= window.getSize().x){
-            nextLevel(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,levelClock,zombiePointer, currentLevel);
+            nextLevel(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,levelClock,zombiePointer, currentLevel, bushes, bushTexture);
             if(firstEnemyPointer != nullptr){
                 delete firstEnemyPointer;
                 firstEnemyPointer = nullptr;
             }
             if(currentLevel >= 5){
                 generateFirstEnemy(ground, firstEnemyPointer);
+                hero.updateVelocity(sf::Vector2f(12,0));
+                if(zombiePointer != nullptr){
+                    zombiePointer->updateVelocity(sf::Vector2f (4,0));
+                }
             }
         }
 
@@ -290,6 +312,21 @@ auto main() -> int {
                 }
                 window.draw(*flyingObstacle);
             }
+
+            for(auto i = bushes.begin(); i != bushes.end();){
+                auto* current = *i;
+                if(current->getPosition().x - hero.getSprite().getPosition().x <= 170 && (hero.getOngoingAnimation() == "Attack" || hero.getOngoingAnimation() == "Jump_Attack")){
+                    delete current;
+                    i = bushes.erase(i);
+                } else if(current->getGlobalBounds().intersects(hero.getSprite().getGlobalBounds())){
+                    hero.slow();
+                    delete current;
+                    i = bushes.erase(i);
+                } else{
+                    window.draw(*current);
+                    i++;
+                }
+            }
         }
 
 //        finish game when hero has been killed ( 0.7 seconds later so that dead animation is fully conducted )
@@ -368,10 +405,11 @@ auto checkHighScore(std::string const& dataFilePath,int const& score, int& highS
     }
 }
 
-auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, Zombie*& zombiePointer, int& currentLevel) -> void{
+auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<sf::Sprite*>& groundObstacles, std::vector<sf::Sprite*>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, Zombie*& zombiePointer, int& currentLevel, std::vector<sf::Sprite*>& bushes, sf::Texture const& bushTexture) -> void{
     hero.setStartingPosition(ground);
     generateRandomGroundObstacles(groundObstacles, ground,groundObstacleTexture);
     generateRandomFlyingObstacles(flyingObstacles, groundObstacles, ground, flyingObstacleTexture);
+    generateRandomBushes(bushes, bushTexture, groundObstacles,ground);
 //            generate zombie
     generateZombie(zombiePointer, ground);
     currentLevel++;
@@ -432,6 +470,9 @@ auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMoveme
 }
 
 auto qOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock, FirstEnemy*& firstEnemy) -> void{
+    if(hero.getSprite().getPosition().y > ground.getPosition().y - 2*ground.getTexture()->getSize().y){
+        hero.backFromSliding(ground);
+    }
     if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*ground.getTexture()->getSize().y){
         hero.changeAnimation("Jump_Attack");
     } else{
@@ -454,14 +495,14 @@ auto generateRandomGroundObstacles(std::vector<sf::Sprite*>& groundObstacles,sf:
     fmt::println("Generating {} ground obstacles", numberOfObstacles);
     for(auto i = 0; i < numberOfObstacles; i++){
         auto* obstacle = new sf::Sprite;
-        auto positionX = std::rand() % 1300 + 300;
+        auto positionX = std::rand() % 1100 + 300;
         auto wrongPosition = bool();
         do {
             wrongPosition = false;
             for(auto* const& groundObstacle : groundObstacles){
                 if (std::abs(groundObstacle->getPosition().x - positionX) <= 200) {
                     wrongPosition = true;
-                    positionX = std::rand() % 1300 + 300;
+                    positionX = std::rand() % 1100 + 300;
                     break;
                 }
             }
@@ -486,14 +527,14 @@ auto generateRandomFlyingObstacles(std::vector<sf::Sprite*>& flyingObstacles, st
 
     for(auto i = 0; i < numberOfObstacles; i++){
         auto* obstacle = new sf::Sprite;
-        auto positionX = std::rand() % 1300 + 300;
+        auto positionX = std::rand() % 1100 + 300;
         auto wrongPosition = bool();
         do {
             wrongPosition = false;
             for(auto* const& groundObstacle : groundObstacles){
                 if (std::abs(groundObstacle->getPosition().x - positionX) <= 200) {
                     wrongPosition = true;
-                    positionX = std::rand() % 1300 + 300;
+                    positionX = std::rand() % 1100 + 300;
                     break;
                 }
             }
@@ -504,6 +545,37 @@ auto generateRandomFlyingObstacles(std::vector<sf::Sprite*>& flyingObstacles, st
         obstacle->setTexture(flyingObstacleTexture);
         obstacle->setScale(0.2, 0.2);
         flyingObstacles.push_back(obstacle);
+    }
+}
+
+auto generateRandomBushes(std::vector<sf::Sprite*>& bushes, sf::Texture const& bushTexture, std::vector<sf::Sprite*> groundObstacles,sf::Sprite const& ground) -> void{
+
+    for(auto* bush : bushes){
+        delete bush;
+    }
+    bushes.clear();
+
+    auto numberOfObstacles = std::rand() % 3;
+    fmt::println("Generating {} bushes", numberOfObstacles);
+    for(auto i = 0; i < numberOfObstacles; i++){
+        auto* obstacle = new sf::Sprite;
+        auto positionX = std::rand() % 1100 + 300;
+        auto wrongPosition = bool();
+        do {
+            wrongPosition = false;
+            for(auto* const& groundObstacle : groundObstacles){
+                if (std::abs(groundObstacle->getPosition().x - positionX) <= 200) {
+                    wrongPosition = true;
+                    positionX = std::rand() % 1100 + 300;
+                    break;
+                }
+            }
+        } while (wrongPosition);
+        auto position = sf::Vector2f(positionX, ground.getPosition().y - 1.4*ground.getTexture()->getSize().y);
+        obstacle->setPosition(position);
+        obstacle->setTexture(bushTexture);
+        obstacle->setScale(2,2);
+        bushes.push_back(obstacle);
     }
 }
 
