@@ -55,7 +55,7 @@ public:
 
     virtual auto setStartingPosition(sf::Sprite const& ground) -> void;
 
-    virtual auto updateVelocity(sf::Vector2f const& newVelocity) -> void;
+    virtual auto updateVelocity(sf::Vector2f const& newVelocity) -> bool;
 
 };
 

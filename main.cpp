@@ -101,6 +101,9 @@ auto main() -> int {
     auto levelClock = sf::Clock();
 //    clock used to track hero's last movement so that the hero goes back to idle when movement is finished
     auto lastMovementClock = sf::Clock();
+//    message clock that is used to determine whether the message should be displayed
+    auto messageClock = sf::Clock();
+    auto isMessageDisplayed = bool();
 
 //    time used for conducting animations
     auto startTime = float();
@@ -200,7 +203,8 @@ auto main() -> int {
             hero.isSliding = false;
         }
 
-        hero.unslow();
+        auto isUnslowingConducted = hero.unslow();
+        if(isUnslowingConducted) mainMenu.setMessageText("");
 
 //        Next level handling when hero is touching and of the window
         if(hero.getSprite().getPosition().x >= window.getSize().x){
@@ -211,11 +215,21 @@ auto main() -> int {
             }
             if(currentLevel >= 5){
                 generateFirstEnemy(ground, firstEnemyPointer);
-                hero.updateVelocity(sf::Vector2f(12,0));
+                auto wasUpdated = hero.updateVelocity(sf::Vector2f(12,0));
                 if(zombiePointer != nullptr){
                     zombiePointer->updateVelocity(sf::Vector2f (4,0));
                 }
+                if(wasUpdated) mainMenu.setMessageText("Speed have temporarily increased because of new level");
+                messageClock.restart();
+                isMessageDisplayed = true;
+
             }
+        }
+
+        if(isMessageDisplayed && messageClock.getElapsedTime().asSeconds() > 3){
+            mainMenu.setMessageText("");
+            isMessageDisplayed = false;
+
         }
 
 //        conducting hero animation
@@ -286,6 +300,7 @@ auto main() -> int {
         } else if(!hero.getIsDead()){
             mainMenu.displayPauseButton(window);
             mainMenu.displayLevel(window, currentLevel);
+            mainMenu.displayMessageText(window);
             window.draw(hero.getSprite());
 
 //            drawing zombie if not nullptr
@@ -324,6 +339,7 @@ auto main() -> int {
                     i = bushes.erase(i);
                 } else if(current->getGlobalBounds().intersects(hero.getSprite().getGlobalBounds())){
                     hero.slow();
+                    mainMenu.setMessageText("slowed!");
                     delete current;
                     i = bushes.erase(i);
                 } else{

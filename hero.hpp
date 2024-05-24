@@ -1,3 +1,5 @@
+#pragma once
+
 #include "character.hpp"
 
 
@@ -36,7 +38,7 @@ class Hero : public Character{
         auto slow() -> void;
 
 //        void used to undo slowing
-        auto unslow() -> void;
+        auto unslow() -> bool;
 
 
 //        Hero gravity (fall when not touching ground)

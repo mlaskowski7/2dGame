@@ -43,6 +43,8 @@ MainMenu::MainMenu() : levelText(), isManualDisplayed() {
     manualTexture = sf::Texture();
     manualTexture.loadFromFile("../assets/controlsInstruction/manual.png");
     manualSprite.setTexture(manualTexture);
+
+    messageText = sf::Text("", font, 30);
 }
 
 auto MainMenu::getNewGameButton() const -> sf::RectangleShape { return newGameButton; }
@@ -58,6 +60,10 @@ auto MainMenu::getIsManualDisplayed() const -> bool{
 }
 auto MainMenu::setIsManualDisplayed(bool const& value) -> void{
     isManualDisplayed = value;
+}
+auto MainMenu::setMessageText(std::string const& message) -> void {
+    messageText = sf::Text(message, font, 30);
+    messageText.setFillColor(sf::Color::Red);
 }
 
 auto MainMenu::getPauseGameButton() const-> sf::Sprite { return pauseButtonSprite; }
@@ -151,4 +157,12 @@ auto MainMenu::displayGameOver(sf::RenderWindow &window, std::string const& dead
     deadMessageText.setPosition(sf::Vector2f(windowCenter(window).x,gameOverText.getPosition().y + 50) - sf::Vector2f(positionHelper(deadMessageText).x,-20));
     window.draw(gameOverText);
     window.draw(deadMessageText);
+}
+
+auto MainMenu::displayMessageText(sf::RenderWindow &window) -> void {
+    if(messageText.getString() != ""){
+        messageText.setPosition(windowCenter(window) - positionHelper(messageText));
+        window.draw(messageText);
+    }
+
 }

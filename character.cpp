@@ -69,9 +69,11 @@ auto Character::setStartingPosition(const sf::Sprite &ground) -> void {
 
 }
 
-auto Character::updateVelocity(sf::Vector2f const& newVelocity) -> void {
+auto Character::updateVelocity(sf::Vector2f const& newVelocity) -> bool {
     if(movementVelocity != newVelocity){
         movementVelocity = newVelocity;
+        return true;
     }
+    return false;
 
 }

@@ -37,12 +37,14 @@ auto Hero::slow() -> void {
 
 }
 
-auto Hero::unslow() -> void {
+auto Hero::unslow() -> bool {
     if(isSlowed && slowedClock.getElapsedTime().asSeconds() > 5){
         movementVelocity += sf::Vector2f(3.5,0);
         fmt::println("Hero movement velocity changed to {}", movementVelocity.x);
         isSlowed = false;
+        return true;
     }
+    return false;
 }
 
 auto Hero::kill(sf::Sprite const& ground) -> void{
