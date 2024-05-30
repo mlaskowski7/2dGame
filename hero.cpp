@@ -32,6 +32,14 @@ auto Hero::initBullet() -> void {
     bulletPointer = std::make_unique<Bullet>(position);
 }
 
+auto Hero::deleteBullet() -> void {
+    bulletPointer = nullptr;
+}
+
+auto Hero::getIsBulletInitialized() -> bool {
+    return bulletPointer != nullptr;
+}
+
 auto Hero::moveBullet() -> void {
     if(bulletPointer != nullptr){
         bulletPointer->move();

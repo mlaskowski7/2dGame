@@ -7,12 +7,12 @@ Bullet::Bullet(sf::Vector2f const& heroPosition) {
     texture.loadFromFile("../assets/hero/male/Bullet.png");
     sprite.setTexture(texture);
     sprite.setScale(0.4,0.4);
-    position = heroPosition + sf::Vector2f(10,25);
+    position = heroPosition + sf::Vector2f(10,30);
     sprite.setPosition(position);
 }
 
 auto Bullet::move() -> void {
-    position += sf::Vector2f(10,0);
+    position += sf::Vector2f(15,0);
     sprite.setPosition(position);
 }
 

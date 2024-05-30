@@ -102,7 +102,7 @@ auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
         resumeGameButton.setFillColor(sf::Color::White);
     } else{
         resumeGameText.setFillColor(sf::Color::Red);
-        resumeGameButton.setFillColor(sf::Color::Transparent);
+        resumeGameButton.setFillColor(sf::Color(65,65,65));
     }
 
     manualButtonSprite.setPosition(10,20);

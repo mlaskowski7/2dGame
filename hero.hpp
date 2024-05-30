@@ -30,12 +30,14 @@ class Hero : public Character{
 
 //        Bullet pointer getter
         auto getBulletSprite() -> sf::Sprite;
+        auto getIsBulletInitialized() -> bool;
 
 //        void used to display bullet
         auto drawBullet(sf::RenderWindow& window) -> void;
 
 //        void used to initialize bullet after fireing it
         auto initBullet() -> void;
+        auto deleteBullet() -> void;
         auto moveBullet() -> void;
 
 //        Score getter

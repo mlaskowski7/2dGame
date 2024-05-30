@@ -5,7 +5,7 @@
 
 class FirstEnemy : public Character{
 
-    int healthPoints = 5;
+    int healthPoints;
 
 public:
 
@@ -18,4 +18,7 @@ public:
     auto setStartingPosition(sf::Sprite const& ground) -> void override;
 
     auto kill() -> void;
+
+    auto reduceHealthPoint() -> int;
+    auto getHealthPoints() -> int;
 };

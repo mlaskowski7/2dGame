@@ -247,7 +247,7 @@ auto main() -> int {
                     zombiePointer->updateVelocity(sf::Vector2f (4,0));
                 }
                 if(wasUpdated){
-                    mainMenu.setMessageText("Speed have temporarily increased because of new level");
+                    mainMenu.setMessageText("Speed has permanently increased because of new level");
                 }
                 messageClock.restart();
                 isMessageDisplayed = true;
@@ -274,6 +274,16 @@ auto main() -> int {
 
         if(firstEnemyPointer != nullptr){
 //              Kill hero on collision with first enemy
+            if(hero.getIsBulletInitialized() && collision(firstEnemyPointer->getSprite(), hero.getBulletSprite())){
+                auto enemyHealth = firstEnemyPointer->reduceHealthPoint();
+                mainMenu.setMessageText("Enemy health points reduced to " + std::to_string(enemyHealth));
+                messageClock.restart();
+                hero.deleteBullet();
+                if(firstEnemyPointer->getHealthPoints() == 0){
+                    firstEnemyPointer->kill();
+                }
+
+            }
             if(collision(hero.getSprite(), firstEnemyPointer->getSprite()) && !hero.getIsDead() && !firstEnemyPointer->getIsDead()){
                 fmt::println("Detected collision between firstEnemy and hero");
                 firstEnemyPointer->changeAnimation("JumpAttack");
@@ -380,6 +390,7 @@ auto main() -> int {
 
         if(hero.getDeadTimeClock().getElapsedTime().asSeconds() < 2 && hero.getIsDead()){
             mainMenu.displayGameOver(window, deadMessage);
+            mainMenu.setMessageText("");
         } else if(hero.getDeadTimeClock().getElapsedTime().asSeconds() > 2 && hero.getIsDead()){
             hero.setIsDead(false);
             mainMenu.setResumeEnabled(false);
@@ -501,7 +512,10 @@ auto qOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock
         hero.changeAnimation("Attack");
     }
     if(firstEnemy != nullptr && firstEnemy->getSprite().getPosition().x - hero.getSprite().getPosition().x <= 170){
-        firstEnemy->kill();
+        firstEnemy->reduceHealthPoint();
+        if(firstEnemy->getHealthPoints() == 0){
+            firstEnemy->kill();
+        }
     }
     lastMovementClock.restart();
 }
@@ -527,14 +541,14 @@ auto generateRandomGroundObstacles(std::vector<std::unique_ptr<sf::Sprite>>& gro
     fmt::println("Generating {} ground obstacles", numberOfObstacles);
     for(auto i = 0; i < numberOfObstacles; i++){
         auto obstacle = std::make_unique<sf::Sprite>();
-        auto positionX = std::rand() % 1100 + 200;
+        auto positionX = std::rand() % 1000 + 300;
         auto wrongPosition = bool();
         do {
             wrongPosition = false;
             for(auto const& groundObstacle : groundObstacles){
                 if (std::abs(groundObstacle->getPosition().x - positionX) <= 200) {
                     wrongPosition = true;
-                    positionX = std::rand() % 1100 + 200;
+                    positionX = std::rand() % 1000 + 300;
                     break;
                 }
             }
@@ -555,14 +569,14 @@ auto generateRandomFlyingObstacles(std::vector<std::unique_ptr<sf::Sprite>>& fly
 
     for(auto i = 0; i < numberOfObstacles; i++){
         auto obstacle = std::make_unique<sf::Sprite>();
-        auto positionX = std::rand() % 1100 + 200;
+        auto positionX = std::rand() % 1000 + 300;
         auto wrongPosition = bool();
         do {
             wrongPosition = false;
             for(auto const& groundObstacle : groundObstacles){
                 if (std::abs(groundObstacle->getPosition().x - positionX) <= 200) {
                     wrongPosition = true;
-                    positionX = std::rand() % 1100 + 200;
+                    positionX = std::rand() % 1000 + 300;
                     break;
                 }
             }

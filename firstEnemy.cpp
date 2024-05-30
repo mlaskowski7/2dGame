@@ -2,6 +2,7 @@
 
 FirstEnemy::FirstEnemy() : Character(), killingClock(), killing(){
     frames = getFramesMap("../assets/firstEnemyBackwards");
+    healthPoints = 3;
     changeAnimation("Idle");
     movementVelocity = sf::Vector2f (1,0);
 }
@@ -16,4 +17,14 @@ auto FirstEnemy::kill() -> void {
     isDead = true;
     changeAnimation("Dead");
     deadTimeClock.restart();
+}
+
+auto FirstEnemy::reduceHealthPoint() -> int {
+    healthPoints--;
+    fmt::println("enemy health: {}", healthPoints);
+    return healthPoints;
+}
+
+auto FirstEnemy::getHealthPoints() -> int {
+    return healthPoints;
 }
