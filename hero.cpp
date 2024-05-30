@@ -9,12 +9,33 @@ Hero::Hero() : Character(), isSlowed(), slowedClock(){
     movementVelocity = sf::Vector2f(10,0);
     score = 0;
     isSliding = false;
+    bulletPointer = nullptr;
 }
 
 auto Hero::newGame(sf::Sprite const& ground) -> void{
     setStartingPosition(ground);
     setScore(0);
     isDead = false;
+}
+
+auto Hero::getBulletSprite() -> sf::Sprite{
+    return bulletPointer->getSprite();
+}
+
+auto Hero::drawBullet(sf::RenderWindow &window) -> void {
+    if(bulletPointer != nullptr){
+        window.draw(bulletPointer->getSprite());
+    }
+}
+
+auto Hero::initBullet() -> void {
+    bulletPointer = std::make_unique<Bullet>(position);
+}
+
+auto Hero::moveBullet() -> void {
+    if(bulletPointer != nullptr){
+        bulletPointer->move();
+    }
 }
 
 // Score getter implementation

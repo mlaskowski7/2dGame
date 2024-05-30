@@ -1,11 +1,15 @@
 #pragma once
 
 #include "character.hpp"
+#include "bullet.hpp"
 
 class Hero : public Character{
 
     std::string gender;
     int score;
+
+//    bullet
+    std::unique_ptr<Bullet> bulletPointer;
 
 //    slowing hero func
     bool isSlowed;
@@ -23,6 +27,16 @@ class Hero : public Character{
 
 //        New game hero init
         auto newGame(sf::Sprite const& ground) -> void;
+
+//        Bullet pointer getter
+        auto getBulletSprite() -> sf::Sprite;
+
+//        void used to display bullet
+        auto drawBullet(sf::RenderWindow& window) -> void;
+
+//        void used to initialize bullet after fireing it
+        auto initBullet() -> void;
+        auto moveBullet() -> void;
 
 //        Score getter
         auto getScore() const -> int;

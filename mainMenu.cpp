@@ -188,7 +188,7 @@ auto MainMenu::displayGameOver(sf::RenderWindow &window, std::string const& dead
 
 auto MainMenu::displayMessageText(sf::RenderWindow &window) -> void {
     if(messageText.getString() != ""){
-        messageText.setPosition(windowCenter(window) - positionHelper(messageText));
+        messageText.setPosition(windowCenter(window) - positionHelper(messageText) - sf::Vector2f(0,20));
         window.draw(messageText);
     }
 

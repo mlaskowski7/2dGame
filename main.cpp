@@ -6,7 +6,6 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
-#include <fstream>
 #include <memory>
 
 #include "hero.hpp"
@@ -32,6 +31,7 @@ auto leftArrowAfterJumpClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprit
 auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
 auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void;
 auto qOnClick(Hero& hero, sf::Sprite const& ground,sf::Clock& lastMovementClock, std::unique_ptr<FirstEnemy>& firstEnemy) -> void;
+auto wOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock) -> void;
 
 // game state management functions
 auto nextLevel(Hero& hero, sf::Sprite const& ground, std::vector<std::unique_ptr<sf::Sprite>>& groundObstacles, std::vector<std::unique_ptr<sf::Sprite>>& flyingObstacles, sf::Texture const& groundObstacleTexture, sf::Texture const& flyingObstacleTexture, sf::Clock& levelClock, std::unique_ptr<Zombie>& zombiePointer, int& currentLevel, std::vector<std::unique_ptr<sf::Sprite>>& bushes, sf::Texture const& bushTexture) -> void;
@@ -173,6 +173,9 @@ auto main() -> int {
 //                Save game
                 if(event.key.code == sf::Keyboard::S){
                     saveGame(hero, currentLevel);
+                    mainMenu.setMessageText("Game Saved");
+                    messageClock.restart();
+                    isMessageDisplayed = true;
                 }
 //                Move Left
                 if (event.key.code == sf::Keyboard::Left) {
@@ -198,6 +201,8 @@ auto main() -> int {
 
 //                Hero attacks controls
                 if(event.key.code == sf::Keyboard::Q) qOnClick(hero, ground, lastMovementClock, firstEnemyPointer);
+
+                if(event.key.code == sf::Keyboard::W) wOnClick(hero, ground, lastMovementClock);
 
                 if(event.key.code == sf::Keyboard::Escape){
                     gameStarted = false;
@@ -258,6 +263,9 @@ auto main() -> int {
 
 //        conducting hero animation
         hero.animation(startTime);
+
+//        move bullet if its not nullptr
+        hero.moveBullet();
 
 //        Back to idle if standing ( prevents running when not moving )
         if(lastMovementClock.getElapsedTime().asSeconds() > 0.3 && !hero.getIsDead()){
@@ -324,6 +332,7 @@ auto main() -> int {
             mainMenu.displayLevel(window, currentLevel);
             mainMenu.displayMessageText(window);
             window.draw(hero.getSprite());
+            hero.drawBullet(window);
 
 //            drawing zombie if not nullptr
             if(zombiePointer != nullptr){
@@ -494,6 +503,20 @@ auto qOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock
     if(firstEnemy != nullptr && firstEnemy->getSprite().getPosition().x - hero.getSprite().getPosition().x <= 170){
         firstEnemy->kill();
     }
+    lastMovementClock.restart();
+}
+
+auto wOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock) -> void{
+    if(hero.getSprite().getPosition().y > ground.getPosition().y - 2*ground.getTexture()->getSize().y){
+        hero.backFromSliding(ground);
+    }
+
+    if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*ground.getTexture()->getSize().y){
+        hero.changeAnimation("Jump_Throw");
+    } else{
+        hero.changeAnimation("Throw");
+    }
+    hero.initBullet();
     lastMovementClock.restart();
 }
 
