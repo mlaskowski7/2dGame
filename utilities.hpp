@@ -1,6 +1,7 @@
 #include <map>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 
 #include <SFML/Graphics.hpp>
 
@@ -16,5 +17,10 @@ auto positionHelper(sf::Text const& element)-> sf::Vector2f ;
 auto positionHelper(sf::Sprite const& element) -> sf::Vector2f;
 
 auto vector2fToString(sf::Vector2f const& vector2f) -> std::string;
-auto getLine(std::fstream& file, int const& line) -> std::string;
+auto getLine(std::string const& filePath, int const& line) -> std::string;
 auto setLine(std::string const& filePath, int const& line, std::string const& str) -> void;
+auto splitString(std::string const& string, char const& delimeter) -> std::vector<std::string>;
+
+// Collisions
+auto collision(sf::Sprite const& lhs, sf::Sprite const& rhs) -> bool;
+auto collision(sf::Sprite const& lhs, std::unique_ptr<sf::Sprite> const& rhs) -> bool;

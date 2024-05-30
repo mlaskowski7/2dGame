@@ -1,3 +1,5 @@
+#pragma once
+
 #include <SFML/Graphics.hpp>
 
 #include "hero.hpp"
@@ -10,6 +12,8 @@ class MainMenu{
     sf::Text newGameText;
     sf::RectangleShape resumeGameButton;
     sf::Text resumeGameText;
+    sf::RectangleShape loadGameButton;
+    sf::Text loadGameText;
     sf::Sprite pauseButtonSprite;
     sf::Texture pauseButtonTexture;
     sf::RectangleShape highScoreContainer;
@@ -26,6 +30,7 @@ class MainMenu{
     sf::Text messageText;
 
     bool isManualDisplayed;
+    bool resumeEnabled;
 
     static auto windowCenter(sf::Window const& window) -> sf::Vector2f;
 
@@ -33,6 +38,9 @@ public:
     MainMenu();
     auto getNewGameButton() const -> sf::RectangleShape;
     auto getResumeGameButton() const -> sf::RectangleShape;
+    auto getResumeEnabled() const -> bool;
+    auto setResumeEnabled(bool const& value) -> void;
+    auto getLoadGameButton() const -> sf::RectangleShape;
     auto getManualButton() const -> sf::Sprite;
     auto getPauseGameButton() const -> sf::Sprite;
     auto getIsManualDisplayed() const -> bool;

@@ -34,11 +34,13 @@ auto vector2fToString(sf::Vector2f const& vector2f) -> std::string{
     return std::to_string(vector2f.x) + ", " + std::to_string(vector2f.y);
 }
 
-auto getLine(std::fstream& file, int const& line) -> std::string{
+auto getLine(std::string const& filePath, int const& line) -> std::string{
+    auto file = std::fstream(filePath);
     auto result = std::string();
     for(auto i = 0; i <= line; i++){
         std::getline(file, result);
     }
+    file.close();
     return result;
 }
 
@@ -59,4 +61,24 @@ auto setLine(std::string const& filePath, int const& line, std::string const& st
     for(auto const& element : currentLines){
         file << element << "\n";
     }
+}
+
+// This function was inspired by geeksforgeeks.org portal (https://www.geeksforgeeks.org/split-string-by-space-into-vector-in-cpp-stl/)
+auto splitString(std::string const& string, char const& delimeter) -> std::vector<std::string>{
+    std::stringstream stream(string);
+    auto result = std::vector<std::string>();
+    auto temp = std::string();
+    while(getline(stream, temp, delimeter)){
+        result.push_back(temp);
+    }
+
+    return result;
+}
+
+// Collisions
+auto collision(sf::Sprite const& lhs, sf::Sprite const& rhs) -> bool{
+    return lhs.getGlobalBounds().intersects(rhs.getGlobalBounds());
+}
+auto collision(sf::Sprite const& lhs, std::unique_ptr<sf::Sprite> const& rhs) -> bool{
+    return lhs.getGlobalBounds().intersects(rhs->getGlobalBounds());
 }

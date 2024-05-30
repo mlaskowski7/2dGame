@@ -3,7 +3,7 @@
 
 MainMenu::MainMenu() : levelText(), isManualDisplayed() {
 
-    container = sf::RectangleShape(sf::Vector2f(300,300));
+    container = sf::RectangleShape(sf::Vector2f(300,400));
     container.setFillColor(sf::Color(0,0,0,128));
 
     font = sf::Font();
@@ -30,6 +30,11 @@ MainMenu::MainMenu() : levelText(), isManualDisplayed() {
     resumeGameText.setFillColor(sf::Color::Black);
     resumeGameButton = sf::RectangleShape(sf::Vector2f(210,50));
 
+    loadGameText = sf::Text("Load Game", font, 30);
+    loadGameText.setFillColor(sf::Color::Black);
+    loadGameButton = sf::RectangleShape(sf::Vector2f (210,50));
+    loadGameButton.setFillColor(sf::Color::Cyan);
+
     pauseButtonTexture = sf::Texture();
     pauseButtonTexture.loadFromFile("../assets/buttons/pauseButton.png");
     pauseButtonSprite.setTexture(pauseButtonTexture);
@@ -50,6 +55,16 @@ MainMenu::MainMenu() : levelText(), isManualDisplayed() {
 auto MainMenu::getNewGameButton() const -> sf::RectangleShape { return newGameButton; }
 
 auto MainMenu::getResumeGameButton() const -> sf::RectangleShape { return resumeGameButton; }
+
+auto MainMenu::getResumeEnabled() const -> bool{
+    return resumeEnabled;
+}
+auto MainMenu::setResumeEnabled(bool const& value) -> void{
+    resumeEnabled = value;
+}
+
+auto MainMenu::getLoadGameButton() const -> sf::RectangleShape { return loadGameButton; }
+
 
 auto MainMenu::getManualButton() const -> sf::Sprite {
     return manualButtonSprite;
@@ -77,8 +92,18 @@ auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
     newGameButton.setPosition(headerText.getPosition().x, headerText.getPosition().y + 100);
     newGameText.setPosition(headerText.getPosition().x + 10, headerText.getPosition().y + 100);
 
-    resumeGameButton.setPosition(headerText.getPosition().x, newGameButton.getPosition().y + 70);
-    resumeGameText.setPosition(headerText.getPosition().x + 10, newGameButton.getPosition().y + 70);
+    loadGameButton.setPosition(headerText.getPosition().x, newGameButton.getPosition().y + 70);
+    loadGameText.setPosition(headerText.getPosition().x + 10, newGameButton.getPosition().y + 70);
+
+    resumeGameButton.setPosition(headerText.getPosition().x, loadGameButton.getPosition().y + 70);
+    resumeGameText.setPosition(headerText.getPosition().x + 10, loadGameButton.getPosition().y + 70);
+    if(resumeEnabled){
+        resumeGameText.setFillColor(sf::Color::Black);
+        resumeGameButton.setFillColor(sf::Color::White);
+    } else{
+        resumeGameText.setFillColor(sf::Color::Red);
+        resumeGameButton.setFillColor(sf::Color::Transparent);
+    }
 
     manualButtonSprite.setPosition(10,20);
 
@@ -91,6 +116,8 @@ auto MainMenu::displayMainMenu(sf::RenderWindow &window) -> void {
         window.draw(newGameText);
         window.draw(resumeGameButton);
         window.draw(resumeGameText);
+        window.draw(loadGameButton);
+        window.draw(loadGameText);
     } else{
         fmt::println("Should show manual");
         window.draw(manualSprite);

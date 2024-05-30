@@ -2,7 +2,6 @@
 
 #include "character.hpp"
 
-
 class Hero : public Character{
 
     std::string gender;
