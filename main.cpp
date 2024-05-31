@@ -30,7 +30,7 @@ auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite groun
 auto leftArrowAfterJumpClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
 auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock, sf::Sprite ground) -> void;
 auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void;
-auto qOnClick(Hero& hero, sf::Sprite const& ground,sf::Clock& lastMovementClock, std::unique_ptr<FirstEnemy>& firstEnemy) -> void;
+auto qOnClick(Hero& hero, sf::Sprite const& ground,sf::Clock& lastMovementClock, std::unique_ptr<FirstEnemy>& firstEnemy, MainMenu& mainMenu) -> void;
 auto wOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock) -> void;
 
 // game state management functions
@@ -96,7 +96,8 @@ auto main() -> int {
     auto mainMenu = MainMenu();
 
 //    Boolean for blocking jump during gravity falling (to prevent flying effect)
-    bool jumpBlocked = false;
+    auto jumpBlocked = bool();
+    auto qBlocked = bool();
 
 //    sfml clock for animations
     auto clock = sf::Clock();
@@ -193,6 +194,9 @@ auto main() -> int {
                     } else{
                         rightArrowOnClick(hero, lastMovementClock, ground);
                     }
+                    if(qBlocked){
+                        qBlocked = false;
+                    }
                 }
 //                Jump
                 if (event.key.code == sf::Keyboard::Up) upArrowOnClick(hero, jumpBlocked, lastMovementClock, ground);
@@ -200,7 +204,10 @@ auto main() -> int {
                 if (event.key.code == sf::Keyboard::Down) downArrowOnClick(hero,jumpBlocked,lastMovementClock);
 
 //                Hero attacks controls
-                if(event.key.code == sf::Keyboard::Q) qOnClick(hero, ground, lastMovementClock, firstEnemyPointer);
+                if(event.key.code == sf::Keyboard::Q && !qBlocked){
+                    qOnClick(hero, ground, lastMovementClock, firstEnemyPointer, mainMenu);
+                    qBlocked = true;
+                }
 
                 if(event.key.code == sf::Keyboard::W) wOnClick(hero, ground, lastMovementClock);
 
@@ -502,7 +509,7 @@ auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMoveme
 
 }
 
-auto qOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock, std::unique_ptr<FirstEnemy>& firstEnemy) -> void{
+auto qOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock, std::unique_ptr<FirstEnemy>& firstEnemy, MainMenu& mainMenu) -> void{
     if(hero.getSprite().getPosition().y > ground.getPosition().y - 2*ground.getTexture()->getSize().y){
         hero.backFromSliding(ground);
     }
@@ -512,7 +519,8 @@ auto qOnClick(Hero& hero, sf::Sprite const& ground, sf::Clock& lastMovementClock
         hero.changeAnimation("Attack");
     }
     if(firstEnemy != nullptr && firstEnemy->getSprite().getPosition().x - hero.getSprite().getPosition().x <= 170){
-        firstEnemy->reduceHealthPoint();
+        auto enemyHealth = firstEnemy->reduceHealthPoint();
+        mainMenu.setMessageText("Enemy health points reduced to " + std::to_string(enemyHealth));
         if(firstEnemy->getHealthPoints() == 0){
             firstEnemy->kill();
         }
