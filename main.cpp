@@ -14,6 +14,7 @@
 #include "utilities.hpp"
 #include "dataFileEnum.hpp"
 #include "firstEnemy.hpp"
+#include "movementEnum.hpp"
 
 
 // main menu on click functions declaration
@@ -144,14 +145,7 @@ auto main() -> int {
 //                Main menu controls
                 if(event.mouseButton.button == sf::Mouse::Left){
                     auto mousePosition = sf::Mouse::getPosition(window);
-                    if(mainMenu.getNewGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted && !mainMenu.getIsManualDisplayed()){
-                        newGameOnclick(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,gameStarted,zombiePointer, currentLevel);
-                    } else if (mainMenu.getResumeGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted && mainMenu.getResumeEnabled() && !mainMenu.getIsManualDisplayed()){
-                        gameStarted = true;
-                    } else if(mainMenu.getPauseGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
-                        gameStarted = false;
-                        mainMenu.setResumeEnabled(true);
-                    } else if(mainMenu.getManualButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
+                    if(mainMenu.getManualButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted){
                         fmt::println("Manual button clicked");
                         if(mainMenu.getIsManualDisplayed()){
                             fmt::println("Manual button is true setting to false");
@@ -160,6 +154,14 @@ auto main() -> int {
                             fmt::println("Should set is manual displayed to true");
                             mainMenu.setIsManualDisplayed(true);
                         }
+                    }
+                    if(mainMenu.getNewGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted && !mainMenu.getIsManualDisplayed()){
+                        newGameOnclick(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,gameStarted,zombiePointer, currentLevel);
+                    } else if (mainMenu.getResumeGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted && mainMenu.getResumeEnabled() && !mainMenu.getIsManualDisplayed()){
+                        gameStarted = true;
+                    } else if(mainMenu.getPauseGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
+                        gameStarted = false;
+                        mainMenu.setResumeEnabled(true);
                     } else if(mainMenu.getLoadGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
                         auto savedPosition = splitString(getLine(dataFile, dataLines::HERO_POSITION_SAVE), ',') ;
                         fmt::println("{},{}",savedPosition[0], savedPosition[1]);
@@ -169,6 +171,7 @@ auto main() -> int {
                         currentLevel = std::stoi(getLine(dataFile, dataLines::LEVEL_SAVE));
                         hero.setScore(std::stoi(getLine(dataFile, dataLines::SCORE_SAVE)));
                     }
+
                 }
             }else if (event.type == sf::Event::KeyPressed && gameStarted && !hero.getIsDead()) {
 //                Save game
@@ -226,19 +229,50 @@ auto main() -> int {
                     mainMenu.setIsManualDisplayed(true);
                 }
 
+            } else if (event.type == sf::Event::KeyReleased && gameStarted && !hero.getIsDead()) {
+                if(event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::Down){
+                    hero.setMoving(Movement::STILL);
+                }
+
             }
+        }
+
+        switch (hero.getMoving()) {
+            case Movement::STILL:
+                break;
+            case Movement::LEFT:
+                hero.moveLeft();
+                lastMovementClock.restart();
+                break;
+            case Movement::RIGHT:
+                hero.moveRight();
+                lastMovementClock.restart();
+                break;
+            case Movement::UP:
+                if(!jumpBlocked){
+                    hero.jump();
+                    lastMovementClock.restart();
+                }
+                break;
+            case Movement::DOWN:
+                hero.slide();
+                lastMovementClock.restart();
+                break;
         }
 
 
 //        disabling multiple jumps and enabling gravity effect, so that hero cant fly
         if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y){
-            jumpBlocked = true;
             hero.gravityEffect();
-        }else if(hero.getSprite().getPosition().y > ground.getPosition().y - 2*groundTexture.getSize().y){
+        } else if(hero.getSprite().getPosition().y > ground.getPosition().y - 2*groundTexture.getSize().y){
             hero.isSliding = true;
-        } else{
-            jumpBlocked = false;
+        }else{
             hero.isSliding = false;
+        }
+        if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y - 300) {
+            jumpBlocked = true;
+        } else if (hero.getSprite().getPosition().y == ground.getPosition().y - 2*groundTexture.getSize().y){
+            jumpBlocked = false;
         }
 
         auto isUnslowingConducted = hero.unslow();
@@ -461,14 +495,14 @@ auto rightArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite grou
         hero.backFromSliding(ground);
     }
     hero.changeAnimation("Run");
-    lastMovementClock.restart();
-    hero.moveRight();
+//    lastMovementClock.restart();
+    hero.setMoving(Movement::RIGHT);
 }
 
 auto rightArrowAfterJumpClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
     hero.changeAnimation("Glide");
-    lastMovementClock.restart();
-    hero.moveRight();
+//    lastMovementClock.restart();
+    hero.setMoving(Movement::RIGHT);
 }
 
 auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
@@ -476,14 +510,14 @@ auto leftArrowOnClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite groun
         hero.backFromSliding(ground);
     }
     hero.changeAnimation("RunBackwards");
-    lastMovementClock.restart();
-    hero.moveLeft();
+//    lastMovementClock.restart();
+    hero.setMoving(Movement::LEFT);
 }
 
 auto leftArrowAfterJumpClick(Hero& hero, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
     hero.changeAnimation("GlideBackwards");
     lastMovementClock.restart();
-    hero.moveLeft();
+    hero.setMoving(Movement::LEFT);
 }
 
 auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock, sf::Sprite ground) -> void{
@@ -493,9 +527,7 @@ auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovement
     if(!jumpBlocked){
         hero.changeAnimation("Jump");
         lastMovementClock.restart();
-        for(auto i = 0; i < 3; i++){
-            hero.jump();
-        }
+        hero.setMoving(Movement::UP);
 
     }
 }
@@ -503,9 +535,9 @@ auto upArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovement
 auto downArrowOnClick(Hero& hero, bool const& jumpBlocked, sf::Clock& lastMovementClock) -> void{
     if(!jumpBlocked){
         hero.changeAnimation("Slide");
-        hero.slide();
+        hero.setMoving(Movement::DOWN);
     }
-    lastMovementClock.restart();
+//    lastMovementClock.restart();
 
 }
 

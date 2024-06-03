@@ -41,6 +41,7 @@ add_executable(2dGame main.cpp
         firstEnemy.hpp
         bullet.cpp
         bullet.hpp
+        movementEnum.hpp
 
 )
 target_link_libraries(2dGame fmt sfml-graphics)

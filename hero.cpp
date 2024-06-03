@@ -3,13 +3,21 @@
 
 
 // Default constructor implementation
-Hero::Hero() : Character(), isSlowed(), slowedClock(){
+Hero::Hero() : Character(), isSlowed(), slowedClock(), moving(){
     frames = getFramesMap("../assets/hero/male");
     changeAnimation("Idle");
-    movementVelocity = sf::Vector2f(10,0);
+    movementVelocity = sf::Vector2f(6,0);
     score = 0;
     isSliding = false;
     bulletPointer = nullptr;
+}
+
+auto Hero::setMoving(Movement const& value) -> void {
+    moving = value;
+}
+
+auto Hero::getMoving() const -> Movement {
+    return moving;
 }
 
 auto Hero::newGame(sf::Sprite const& ground) -> void{
@@ -81,6 +89,7 @@ auto Hero::kill(sf::Sprite const& ground) -> void{
         backFromSliding(ground);
     }
     changeAnimation("Dead");
+    moving = Movement::STILL;
     isDead = true;
     fmt::println("Hero isDead: {}", isDead);
     deadTimeClock.restart();

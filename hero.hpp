@@ -2,6 +2,7 @@
 
 #include "character.hpp"
 #include "bullet.hpp"
+#include "movementEnum.hpp"
 
 class Hero : public Character{
 
@@ -18,12 +19,19 @@ class Hero : public Character{
 //    Vectors storing values of velocities for each movement
 
     sf::Vector2f gravityVelocity = sf::Vector2f(0,3);
-    sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-100);
-    sf::Vector2f slideVelocity = sf::Vector2f(7,30);
+    sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-35);
+    sf::Vector2f slideVelocity = sf::Vector2f(5,30);
+
+//    where hero is moving (2 for right, -2 for left, -1 for up, 1 for down, 0 for no movement)
+     Movement moving;
 
 //    public methods used by main
     public:
         Hero();
+
+//        getter and setter movement
+        auto setMoving(Movement const& value) -> void;
+        auto getMoving() const -> Movement;
 
 //        New game hero init
         auto newGame(sf::Sprite const& ground) -> void;
