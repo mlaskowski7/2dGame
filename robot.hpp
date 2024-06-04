@@ -1,19 +1,13 @@
+#pragma once
+
 #include "character.hpp"
 #include "utilities.hpp"
 
-#include <SFML/Graphics.hpp>
-
-class FirstEnemy : public Character{
-
+class Robot : public Character{
     int healthPoints;
 
 public:
-
-    bool killing;
-
-    sf::Clock killingClock;
-
-    FirstEnemy();
+    Robot();
 
     auto setStartingPosition(sf::Sprite const& ground) -> void override;
 

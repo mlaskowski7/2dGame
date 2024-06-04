@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class FirstEnemy : public Character{
+class Enemy : public Character{
 
     int healthPoints;
 
@@ -13,7 +13,7 @@ public:
 
     sf::Clock killingClock;
 
-    FirstEnemy();
+    Enemy();
 
     auto setStartingPosition(sf::Sprite const& ground) -> void override;
 

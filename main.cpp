@@ -14,6 +14,7 @@
 #include "utilities.hpp"
 #include "dataFileEnum.hpp"
 #include "firstEnemy.hpp"
+#include "robot.hpp"
 #include "movementEnum.hpp"
 
 
@@ -43,6 +44,7 @@ auto generateRandomFlyingObstacles(std::vector<std::unique_ptr<sf::Sprite>>& fly
 auto generateRandomBushes(std::vector<std::unique_ptr<sf::Sprite>>& bushes, sf::Texture const& bushTexture, std::vector<std::unique_ptr<sf::Sprite>> const& groundObstacles, std::vector<std::unique_ptr<sf::Sprite>> const& flyingObstacles,sf::Sprite const& ground) -> void;
 auto generateZombie(std::unique_ptr<Zombie>& zombiePointer,sf::Sprite const& ground) -> void;
 auto generateFirstEnemy(sf::Sprite const& ground, std::unique_ptr<FirstEnemy>& firstEnemyPointer) -> void;
+auto generateRobot(sf::Sprite const& ground, std::unique_ptr<Robot>& robotPointer) -> void;
 
 
 
@@ -92,6 +94,9 @@ auto main() -> int {
 
 //    Place for firstEnemy pointer ( nullptr when no firstEnemy)
     std::unique_ptr<FirstEnemy> firstEnemyPointer = nullptr;
+
+//    Place for robot pointer ( nullptr when no robot)
+    std::unique_ptr<Robot> robotPointer = nullptr;
 
 //    Main menu object init
     auto mainMenu = MainMenu();
@@ -170,6 +175,16 @@ auto main() -> int {
                         gameStarted = true;
                         currentLevel = std::stoi(getLine(dataFile, dataLines::LEVEL_SAVE));
                         hero.setScore(std::stoi(getLine(dataFile, dataLines::SCORE_SAVE)));
+                        generateRandomGroundObstacles(groundObstacles,ground,groundObstacleTexture);
+                        generateRandomFlyingObstacles(flyingObstacles,groundObstacles,ground,flyingObstacleTexture);
+                        generateZombie(zombiePointer,ground);
+                        if(currentLevel >= 5){
+                            generateFirstEnemy(ground, firstEnemyPointer);
+                        }
+                        if(currentLevel >= 10){
+                            generateRobot(ground,robotPointer);
+                        }
+
                     }
 
                 }
@@ -269,7 +284,7 @@ auto main() -> int {
         }else{
             hero.isSliding = false;
         }
-        if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y - 300) {
+        if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y - 200) {
             jumpBlocked = true;
         } else if (hero.getSprite().getPosition().y == ground.getPosition().y - 2*groundTexture.getSize().y){
             jumpBlocked = false;
@@ -283,7 +298,7 @@ auto main() -> int {
             nextLevel(hero,ground,groundObstacles,flyingObstacles,groundObstacleTexture,flyingObstacleTexture,levelClock,zombiePointer, currentLevel, bushes, bushTexture);
             if(currentLevel >= 5){
                 generateFirstEnemy(ground, firstEnemyPointer);
-                auto wasUpdated = hero.updateVelocity(sf::Vector2f(12,0));
+                auto wasUpdated = hero.updateVelocity(sf::Vector2f(8,0));
                 if(zombiePointer != nullptr){
                     zombiePointer->updateVelocity(sf::Vector2f (4,0));
                 }
@@ -293,6 +308,9 @@ auto main() -> int {
                 messageClock.restart();
                 isMessageDisplayed = true;
 
+            }
+            if(currentLevel >= 10){
+                generateRobot(ground,robotPointer);
             }
         }
 
@@ -394,6 +412,10 @@ auto main() -> int {
             if(firstEnemyPointer != nullptr){
                 firstEnemyPointer->animation(startTime);
                 window.draw(firstEnemyPointer->getSprite());
+            }
+            if(robotPointer != nullptr){
+                robotPointer->animation(startTime);
+                window.draw(robotPointer->getSprite());
             }
 
 //            loop checking whether hero has hit any ground obstacle and drawing ground obstacles
@@ -679,8 +701,19 @@ auto generateZombie(std::unique_ptr<Zombie>& zombiePointer, sf::Sprite const& gr
 
 auto generateFirstEnemy(sf::Sprite const& ground, std::unique_ptr<FirstEnemy>& firstEnemyPointer) -> void{
     if(std::rand() % 3 == 0){
+        fmt::println("Generating first enemy");
         firstEnemyPointer = std::move(std::make_unique<FirstEnemy>());
         firstEnemyPointer->setStartingPosition(ground);
+        fmt::println("Generated firstEnemy");
+    }
+}
+
+auto generateRobot(sf::Sprite const& ground, std::unique_ptr<Robot>& robotPointer) -> void{
+    fmt::println("Generate robot called");
+    if(std::rand() % 3 == 0){
+        fmt::println("Generating robot");
+        robotPointer = std::move(std::make_unique<Robot>());
+        robotPointer->setStartingPosition(ground);
         fmt::println("Generated firstEnemy");
     }
 }

@@ -19,7 +19,7 @@ class Hero : public Character{
 //    Vectors storing values of velocities for each movement
 
     sf::Vector2f gravityVelocity = sf::Vector2f(0,3);
-    sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-35);
+    sf::Vector2f jumpingVelocity = sf::Vector2f(0.0f,-40);
     sf::Vector2f slideVelocity = sf::Vector2f(5,30);
 
 //    where hero is moving (2 for right, -2 for left, -1 for up, 1 for down, 0 for no movement)

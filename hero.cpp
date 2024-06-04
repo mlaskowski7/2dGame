@@ -23,6 +23,7 @@ auto Hero::getMoving() const -> Movement {
 auto Hero::newGame(sf::Sprite const& ground) -> void{
     setStartingPosition(ground);
     setScore(0);
+    updateVelocity(sf::Vector2f(6,0));
     isDead = false;
 }
 
