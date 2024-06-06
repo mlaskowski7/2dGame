@@ -284,7 +284,7 @@ auto main() -> int {
         }else{
             hero.isSliding = false;
         }
-        if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y - 200) {
+        if(hero.getSprite().getPosition().y < ground.getPosition().y - 2*groundTexture.getSize().y - 250) {
             jumpBlocked = true;
         } else if (hero.getSprite().getPosition().y == ground.getPosition().y - 2*groundTexture.getSize().y){
             jumpBlocked = false;
