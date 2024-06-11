@@ -43,7 +43,7 @@ class Hero : public Character{
 //        void used to display bullet
         auto drawBullet(sf::RenderWindow& window) -> void;
 
-//        void used to initialize bullet after fireing it
+//        void used to initialize bullet after firing it
         auto initBullet() -> void;
         auto deleteBullet() -> void;
         auto moveBullet() -> void;

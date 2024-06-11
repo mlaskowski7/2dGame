@@ -1,13 +1,23 @@
 #include "bullet.hpp"
 
 
-Bullet::Bullet(sf::Vector2f const& heroPosition) {
+Bullet::Bullet(sf::Vector2f const& heroPosition, bool const& isHero) {
     sprite = sf::Sprite();
     texture = sf::Texture();
-    texture.loadFromFile("../assets/hero/male/Bullet.png");
+    if(isHero){
+        texture.loadFromFile("../assets/hero/male/Bullet.png");
+    } else {
+        texture.loadFromFile("../assets/robot/bullet.png");
+    }
     sprite.setTexture(texture);
     sprite.setScale(0.4,0.4);
-    position = heroPosition + sf::Vector2f(10,30);
+    if(isHero){
+        position = heroPosition + sf::Vector2f(10,30);
+    } else {
+        position = heroPosition;
+    }
+
+
     sprite.setPosition(position);
 }
 

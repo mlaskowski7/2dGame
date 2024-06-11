@@ -46,6 +46,8 @@ add_executable(2dGame main.cpp
         robot.cpp
         enemy.cpp
         enemy.hpp
+        robotBullet.cpp
+        robotBullet.hpp
 
 )
 target_link_libraries(2dGame fmt sfml-graphics)

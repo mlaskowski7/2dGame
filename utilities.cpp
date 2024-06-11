@@ -65,14 +65,19 @@ auto setLine(std::string const& filePath, int const& line, std::string const& st
 
 // This function was inspired by geeksforgeeks.org portal (https://www.geeksforgeeks.org/split-string-by-space-into-vector-in-cpp-stl/)
 auto splitString(std::string const& string, char const& delimeter) -> std::vector<std::string>{
-    std::stringstream stream(string);
-    auto result = std::vector<std::string>();
-    auto temp = std::string();
-    while(getline(stream, temp, delimeter)){
-        result.push_back(temp);
+    try{
+        std::stringstream stream(string);
+        auto result = std::vector<std::string>();
+        auto temp = std::string();
+        while(getline(stream, temp, delimeter)){
+            result.push_back(temp);
+        }
+
+        return result;
+    } catch(std::exception ex){
+        fmt::println("exception occured in splitString: {}", ex.what());
     }
 
-    return result;
 }
 
 // Collisions

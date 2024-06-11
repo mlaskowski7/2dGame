@@ -1,6 +1,6 @@
 #include "robot.hpp"
 
-Robot::Robot() : Character(){
+Robot::Robot() : Character(), killing(), killingClock(){
     frames = getFramesMap("../assets/robotBackwards");
     healthPoints = 3;
     changeAnimation("Idle");
@@ -13,7 +13,7 @@ auto Robot::setStartingPosition(const sf::Sprite &ground) -> void {
 }
 
 auto Robot::kill() -> void {
-    fmt::println("first enemy killed called");
+    fmt::println("robot killed called");
     isDead = true;
     changeAnimation("Dead");
     deadTimeClock.restart();
@@ -27,4 +27,32 @@ auto Robot::reduceHealthPoint() -> int {
 
 auto Robot::getHealthPoints() -> int {
     return healthPoints;
+}
+
+auto Robot::getBulletSprite() -> sf::Sprite{
+    return bulletPointer->getSprite();
+}
+
+auto Robot::drawBullet(sf::RenderWindow &window) -> void {
+    if(bulletPointer != nullptr){
+        window.draw(bulletPointer->getSprite());
+    }
+}
+
+auto Robot::initBullet() -> void {
+    bulletPointer = std::make_unique<RobotBullet>(position);
+}
+
+auto Robot::deleteBullet() -> void {
+    bulletPointer = nullptr;
+}
+
+auto Robot::getIsBulletInitialized() -> bool {
+    return bulletPointer != nullptr;
+}
+
+auto Robot::moveBullet() -> void {
+    if(bulletPointer != nullptr){
+        bulletPointer->move();
+    }
 }

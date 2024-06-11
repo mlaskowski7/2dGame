@@ -38,7 +38,7 @@ auto Hero::drawBullet(sf::RenderWindow &window) -> void {
 }
 
 auto Hero::initBullet() -> void {
-    bulletPointer = std::make_unique<Bullet>(position);
+    bulletPointer = std::make_unique<Bullet>(position, true);
 }
 
 auto Hero::deleteBullet() -> void {
