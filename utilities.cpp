@@ -31,7 +31,7 @@ auto positionHelper(sf::Sprite const& element) -> sf::Vector2f {
 
 
 auto vector2fToString(sf::Vector2f const& vector2f) -> std::string{
-    return std::to_string(vector2f.x) + ", " + std::to_string(vector2f.y);
+    return std::to_string(vector2f.x) + "," + std::to_string(vector2f.y);
 }
 
 auto getLine(std::string const& filePath, int const& line) -> std::string{
@@ -74,10 +74,10 @@ auto splitString(std::string const& string, char const& delimeter) -> std::vecto
         }
 
         return result;
-    } catch(std::exception ex){
+    } catch(std::exception& ex){
         fmt::println("exception occured in splitString: {}", ex.what());
+        return std::vector<std::string>();
     }
-
 }
 
 // Collisions

@@ -174,7 +174,7 @@ auto main() -> int {
                     } else if(mainMenu.getPauseGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
                         gameStarted = false;
                         mainMenu.setResumeEnabled(true);
-                    } else if(mainMenu.getLoadGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)})){
+                    } else if(mainMenu.getLoadGameButton().getGlobalBounds().contains({static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)}) && !gameStarted){
                         loadGame(hero,currentLevel,gameStarted, ground, dataFile, firstEnemyPointer, robotPointer, robotShootingClock, zombiePointer, bushes, groundObstacles, flyingObstacles, groundObstacleTexture, flyingObstacleTexture, bushTexture);
                     }
 
@@ -573,19 +573,19 @@ auto saveGame(Hero const& hero, int const& currentLevel, std::unique_ptr<Zombie>
     auto flyingPositions = std::string();
     for(auto i = 0; i < flyingObstacles.size(); i++){
         flyingPositions += vector2fToString(flyingObstacles[i]->getPosition());
-        flyingPositions += " ";
+        if(i != flyingObstacles.size() - 1) flyingPositions += " ";
     }
 
     auto groundPositions = std::string();
     for(auto i = 0; i < groundObstacles.size(); i++){
         groundPositions += vector2fToString(groundObstacles[i]->getPosition());
-        groundPositions += " ";
+        if(i != groundObstacles.size() - 1) groundPositions += " ";
     }
 
     auto bushPositions = std::string();
     for(auto i = 0; i < bushes.size(); i++){
         bushPositions += vector2fToString(bushes[i]->getPosition());
-        groundPositions += " ";
+        if(i != bushes.size() - 1) bushPositions += " ";
     }
 
     setLine(dataFile, dataLines::FLYING_OBSTACLES_POSITIONS_SAVE, flyingPositions);
@@ -606,95 +606,99 @@ auto loadGame(Hero& hero, int& currentLevel, bool& gameStarted, sf::Sprite const
 
     gameStarted = true;
     currentLevel = std::stoi(getLine(dataFile, dataLines::LEVEL_SAVE));
+
+//    update velocity
+    if(currentLevel < 5 ){
+        hero.updateVelocity(sf::Vector2f(6,0));
+    } else if(currentLevel < 10){
+        hero.updateVelocity(sf::Vector2f(8,0));
+    } else{
+        hero.updateVelocity(sf::Vector2f(9,0));
+    }
+
     hero.setScore(std::stoi(getLine(dataFile, dataLines::SCORE_SAVE)));
-    fmt::println("1");
+
     if(getLine(dataFile, dataLines::IS_ENEMY_NINJA_SAVE) == "1"){
         loadFirstEnemy(ground, firstEnemyPtr);
     }
-    fmt::println("2");
+
     if(getLine(dataFile, dataLines::IS_ROBOT_SAVE) == "1"){
         loadRobot(ground, robotPtr, robotShootingClock);
     }
-//    fmt::println("3");
-//    if(getLine(dataFile, dataLines::ZOMBIE_POSITION_SAVE) != "0"){
-//        auto saved = splitString(getLine(dataFile, dataLines::ZOMBIE_POSITION_SAVE), ',');
-//        try{
-//            auto position = sf::Vector2f(std::stof(saved[0]), std::stof(saved[1]));
-//            fmt::println("zombie saved position: {},{}",position.x,position.y);
-//            loadZombie(zombiePtr, ground, position);
-//        } catch (std::invalid_argument& ex){
-//            fmt::println("an invalid argument exception occured while trying to convert zomvie position save to floats: {}", ex.what());
-//        }
-//
-//    }
-//    fmt::println("4");
-//
-//    if(!getLine(dataFile,dataLines::GROUND_OBSTACLES_POSITIONS_SAVE).empty()){
-//        auto obstacles = splitString(getLine(dataFile,dataLines::GROUND_OBSTACLES_POSITIONS_SAVE),' ');
-//        for(auto const& obstacle : obstacles){
-//            auto xy = splitString(obstacle, ',');
-//            try{
-//                auto position = sf::Vector2f(std::stof(xy[0]),std::stof(xy[1]));
-//                loadGroundObstacle(groundObstacles, ground, groundObstacleTexture, position);
-//            } catch(std::invalid_argument& ex){
-//                fmt::println("couldnt convert to float: {}, {}, {}", ex.what(), xy[0], xy[1]);
-//                break;
-//            }
-//
-//        }
-//    }
-//
-//    fmt::println("4");
-//
-//    if(!getLine(dataFile,dataLines::GROUND_OBSTACLES_POSITIONS_SAVE).empty()){
-//        auto obstacles = splitString(getLine(dataFile,dataLines::GROUND_OBSTACLES_POSITIONS_SAVE),' ');
-//        for(auto const& obstacle : obstacles){
-//            auto xy = splitString(obstacle, ',');
-//            try{
-//                auto position = sf::Vector2f(std::stof(xy[0]),std::stof(xy[1]));
-//                loadGroundObstacle(groundObstacles, ground, groundObstacleTexture, position);
-//            } catch(std::invalid_argument& ex){
-//                fmt::println("couldnt convert to float: {}, {}, {}", ex.what(), xy[0], xy[1]);
-//                break;
-//            }
-//
-//        }
-//    }
-//
-//    fmt::println("4");
-//
-//    if(!getLine(dataFile,dataLines::FLYING_OBSTACLES_POSITIONS_SAVE).empty()){
-//        auto obstacles = splitString(getLine(dataFile,dataLines::FLYING_OBSTACLES_POSITIONS_SAVE),' ');
-//        for(auto const& obstacle : obstacles){
-//            auto xy = splitString(obstacle, ',');
-//            try{
-//                auto position = sf::Vector2f(std::stof(xy[0]),std::stof(xy[1]));
-//                loadFlyingObstacle(flyingObstacles, ground, flyingObstacleTexture, position);
-//            } catch(std::invalid_argument& ex){
-//                fmt::println("couldnt convert to float: {}, {}, {}", ex.what(), xy[0], xy[1]);
-//                break;
-//            }
-//
-//        }
-//    }
-//
-//    fmt::println("5");
-//
-//    if(!getLine(dataFile,dataLines::BUSHES_POSITIONS_SAVE).empty()){
-//        auto obstacles = splitString(getLine(dataFile,dataLines::BUSHES_POSITIONS_SAVE),' ');
-//        for(auto const& obstacle : obstacles){
-//            auto xy = splitString(obstacle, ',');
-//            try {
-//                auto position = sf::Vector2f(std::stof(xy[0]), std::stof(xy[1]));
-//                loadBush(bushes, ground, bushTexture, position);
-//            }catch(std::invalid_argument& ex){
-//                fmt::println("couldnt convert to float: {}, {}, {}", ex.what(), xy[0], xy[1]);
-//                break;
-//            }
-//        }
-//    }
-//
-//    fmt::println("6");
+
+    if(getLine(dataFile, dataLines::ZOMBIE_POSITION_SAVE) != "0"){
+        auto saved = splitString(getLine(dataFile, dataLines::ZOMBIE_POSITION_SAVE), ',');
+        try{
+            auto position = sf::Vector2f(std::stof(saved[0]), std::stof(saved[1]));
+            fmt::println("zombie saved position: {},{}",position.x,position.y);
+            loadZombie(zombiePtr, ground, position);
+        } catch (std::invalid_argument& ex){
+            fmt::println("an invalid argument exception occured while trying to convert zomvie position save to floats: {}", ex.what());
+        }
+
+    }
+
+
+    if(!getLine(dataFile,dataLines::GROUND_OBSTACLES_POSITIONS_SAVE).empty()){
+        auto obstacles = splitString(getLine(dataFile,dataLines::GROUND_OBSTACLES_POSITIONS_SAVE),' ');
+        for(auto const& obstacle : obstacles){
+            auto xy = splitString(obstacle, ',');
+            fmt::println("obstacle string - {}", obstacle);
+            fmt::println("detected saved ground obstacle position - {},{}", xy[0], xy[1]);
+            try{
+                auto position = sf::Vector2f(std::stof(xy[0]),std::stof(xy[1]));
+                loadGroundObstacle(groundObstacles, ground, groundObstacleTexture, position);
+            } catch(std::invalid_argument& ex){
+                fmt::println("couldnt convert to float: {}, {}, {}", ex.what(), xy[0], xy[1]);
+                break;
+            }
+
+        }
+    }
+
+    if(!getLine(dataFile,dataLines::GROUND_OBSTACLES_POSITIONS_SAVE).empty()){
+        auto obstacles = splitString(getLine(dataFile,dataLines::GROUND_OBSTACLES_POSITIONS_SAVE),' ');
+        for(auto const& obstacle : obstacles){
+            auto xy = splitString(obstacle, ',');
+            try{
+                auto position = sf::Vector2f(std::stof(xy[0]),std::stof(xy[1]));
+                loadGroundObstacle(groundObstacles, ground, groundObstacleTexture, position);
+            } catch(std::invalid_argument& ex){
+                fmt::println("couldnt convert to float: {}, {}, {}", ex.what(), xy[0], xy[1]);
+                break;
+            }
+
+        }
+    }
+
+    if(!getLine(dataFile,dataLines::FLYING_OBSTACLES_POSITIONS_SAVE).empty()){
+        auto obstacles = splitString(getLine(dataFile,dataLines::FLYING_OBSTACLES_POSITIONS_SAVE),' ');
+        for(auto const& obstacle : obstacles){
+            auto xy = splitString(obstacle, ',');
+            try{
+                auto position = sf::Vector2f(std::stof(xy[0]),std::stof(xy[1]));
+                loadFlyingObstacle(flyingObstacles, ground, flyingObstacleTexture, position);
+            } catch(std::invalid_argument& ex){
+                fmt::println("couldnt convert to float: {}, {}, {}", ex.what(), xy[0], xy[1]);
+                break;
+            }
+
+        }
+    }
+
+    if(!getLine(dataFile,dataLines::BUSHES_POSITIONS_SAVE).empty()){
+        auto obstacles = splitString(getLine(dataFile,dataLines::BUSHES_POSITIONS_SAVE),' ');
+        for(auto const& obstacle : obstacles){
+            auto xy = splitString(obstacle, ',');
+            try {
+                auto position = sf::Vector2f(std::stof(xy[0]), std::stof(xy[1]));
+                loadBush(bushes, ground, bushTexture, position);
+            }catch(std::invalid_argument& ex){
+                fmt::println("couldnt convert to float: {}, {}, {}", ex.what(), xy[0], xy[1]);
+                break;
+            }
+        }
+    }
 }
 
 auto checkHighScore(std::string const& dataFilePath,int const& score, int& highScore) -> void{
@@ -864,7 +868,7 @@ auto loadFlyingObstacle(std::vector<std::unique_ptr<sf::Sprite>>& flyingObstacle
     auto obstacle = std::make_unique<sf::Sprite>();
     obstacle->setPosition(position);
     obstacle->setTexture(flyingObstacletexture);
-    obstacle->setScale(0.3,0.3);
+    obstacle->setScale(0.2,0.2);
     flyingObstacles.push_back(std::move(obstacle));
 
 }
@@ -910,7 +914,7 @@ auto loadBush(std::vector<std::unique_ptr<sf::Sprite>>& bushes,sf::Sprite const&
     auto obstacle = std::make_unique<sf::Sprite>();
     obstacle->setPosition(position);
     obstacle->setTexture(bushTexture);
-    obstacle->setScale(0.3,0.3);
+    obstacle->setScale(2,2);
     bushes.push_back(std::move(obstacle));
 
 }

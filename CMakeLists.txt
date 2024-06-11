@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(BUILD_SHARED_LIBS FALSE)
 
-# Enable AddressSanitizer to keep track of memory leaks
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+## Enable AddressSanitizer to keep track of memory leaks
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
 
 include(FetchContent)
 
