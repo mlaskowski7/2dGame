@@ -9,6 +9,7 @@
 #include "mainMenu.hpp"
 #include "utilities.hpp"
 #include "dataFileEnum.hpp"
+#include "knife.hpp"
 
 class Game{
 
@@ -33,13 +34,15 @@ class Game{
     std::string deadMessage;
 
 
-    //    map
+//    map
     sf::Sprite bg;
     sf::Sprite ground;
     sf::Texture groundTexture;
 
 //    Game entities
     Hero hero;
+//    Place for knife upgrader
+    std::unique_ptr<Knife> knife;
 //    Place for zombie pointer ( nullptr when no zombie )
     std::unique_ptr<Zombie> zombiePointer;
 //    Place for firstEnemy pointer ( nullptr when no firstEnemy)
@@ -91,6 +94,7 @@ class Game{
     auto nextLevel() -> void;
 
 // functions used to randomly generate obstacles and enemies
+    auto spawnKnife() -> void;
     auto generateRandomGroundObstacles() -> void;
     auto loadGroundObstacle(sf::Vector2f const& position) -> void;
     auto generateRandomFlyingObstacles() -> void;
@@ -98,7 +102,7 @@ class Game{
     auto generateRandomBushes() -> void;
     auto loadBush(sf::Vector2f const& position) -> void;
     auto generateZombie() -> void;
-    auto loadZombie(sf::Vector2f const& position) -> void;
+    auto loadZombie(sf::Vector2f const& position, std::string const& gender) -> void;
     auto generateFirstEnemy() -> void;
     auto loadFirstEnemy() -> void;
     auto generateRobot() -> void;

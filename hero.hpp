@@ -63,7 +63,6 @@ class Hero : public Character{
 //        void used to undo slowing
         auto unslow() -> bool;
 
-
 //        Hero gravity (fall when not touching ground)
         auto gravityEffect() -> void;
 
@@ -79,6 +78,8 @@ class Hero : public Character{
         auto backFromSliding(sf::Sprite const& ground) -> void;
 //        Boolean used to determine whether hero is sliding
         bool isSliding;
+//        Boolean used to determine whether throwing ability is unlocked
+        bool canThrow;
 
 //        Starting position void override
         auto setStartingPosition(sf::Sprite const& ground) -> void override;

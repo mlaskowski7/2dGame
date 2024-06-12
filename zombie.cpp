@@ -9,6 +9,10 @@ Zombie::Zombie(std::string const& zombieGender) : Character(), clock(){
     movementVelocity = sf::Vector2f (3,0);
 }
 
+auto Zombie::getGender() const -> std::string {
+    return gender;
+}
+
 
 auto Zombie::setStartingPosition(sf::Sprite const& ground) -> void {
     if(gender == "male"){

@@ -3,7 +3,7 @@
 
 
 // Default constructor implementation
-Hero::Hero() : Character(), isSlowed(), slowedClock(), moving(){
+Hero::Hero() : Character(), isSlowed(), slowedClock(), moving(), canThrow(){
     frames = getFramesMap("../assets/hero/male");
     changeAnimation("Idle");
     movementVelocity = sf::Vector2f(6,0);
@@ -25,6 +25,7 @@ auto Hero::newGame(sf::Sprite const& ground) -> void{
     setScore(0);
     updateVelocity(sf::Vector2f(6,0));
     isDead = false;
+    canThrow = false;
 }
 
 auto Hero::getBulletSprite() -> sf::Sprite{

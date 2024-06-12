@@ -9,4 +9,5 @@ enum dataLines{
     IS_ROBOT_SAVE = 7,
     ZOMBIE_POSITION_SAVE = 8,
     IS_ENEMY_NINJA_SAVE = 9,
+    HERO_CAN_THROW_SAVE = 10,
 };

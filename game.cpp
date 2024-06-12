@@ -23,6 +23,7 @@ Game::Game() : gameStarted(), bg(), ground(), groundTexture(), hero(), mainMenu(
     hero.setStartingPosition(ground);
 
 //    setting entities pointers for nullptrs
+    knife = nullptr;
     zombiePointer = nullptr;
     firstEnemyPointer = nullptr;
     robotPointer = nullptr;
@@ -41,6 +42,7 @@ Game::Game() : gameStarted(), bg(), ground(), groundTexture(), hero(), mainMenu(
 
 auto Game::newGameOnclick() -> void{
     zombiePointer = nullptr;
+    knife = nullptr;
     generateRandomGroundObstacles();
     generateRandomFlyingObstacles();
     gameStarted = true;
@@ -53,9 +55,10 @@ auto Game::saveGame() -> void{
     setLine("../data.txt", dataLines::HERO_POSITION_SAVE, vector2fToString(hero.getSprite().getPosition()));
     setLine("../data.txt",dataLines::SCORE_SAVE, std::to_string(hero.getScore()));
     setLine("../data.txt", dataLines::LEVEL_SAVE, std::to_string(currentLevel));
-    setLine(dataFile, dataLines::ZOMBIE_POSITION_SAVE, zombiePointer != nullptr ? vector2fToString(zombiePointer->getSprite().getPosition()) : "0");
+    setLine(dataFile, dataLines::ZOMBIE_POSITION_SAVE, zombiePointer != nullptr ? vector2fToString(zombiePointer->getSprite().getPosition()) + "," + zombiePointer->getGender() : "0");
     setLine(dataFile, dataLines::IS_ENEMY_NINJA_SAVE, firstEnemyPointer != nullptr ? "1" : "0");
     setLine(dataFile, dataLines::IS_ROBOT_SAVE, robotPointer != nullptr ? "1" : "0");
+    setLine(dataFile, dataLines::HERO_CAN_THROW_SAVE, hero.canThrow ? "1" : "0");
 
     auto flyingPositions = std::string();
     for(auto i = 0; i < flyingObstacles.size(); i++){
@@ -94,6 +97,10 @@ auto Game::loadGame() -> void{
     gameStarted = true;
     currentLevel = std::stoi(getLine(dataFile, dataLines::LEVEL_SAVE));
 
+    if(getLine(dataFile, dataLines::HERO_CAN_THROW_SAVE) == "1"){
+        hero.canThrow = true;
+    }
+
 //    update velocity
     if(currentLevel < 5 ){
         hero.updateVelocity(sf::Vector2f(6,0));
@@ -118,7 +125,7 @@ auto Game::loadGame() -> void{
         try{
             auto position = sf::Vector2f(std::stof(saved[0]), std::stof(saved[1]));
             fmt::println("zombie saved position: {},{}",position.x,position.y);
-            loadZombie(position);
+            loadZombie(position, saved[2]);
         } catch (std::invalid_argument& ex){
             fmt::println("an invalid argument exception occured while trying to convert zomvie position save to floats: {}", ex.what());
         }
@@ -272,17 +279,25 @@ auto Game::qOnClick() -> void {
 }
 
 auto Game::wOnClick() -> void {
-    if (hero.getSprite().getPosition().y > ground.getPosition().y - 2 * ground.getTexture()->getSize().y) {
-        hero.backFromSliding(ground);
-    }
+    if(hero.canThrow){
+        if (hero.getSprite().getPosition().y > ground.getPosition().y - 2 * ground.getTexture()->getSize().y) {
+            hero.backFromSliding(ground);
+        }
 
-    if (hero.getSprite().getPosition().y < ground.getPosition().y - 2 * ground.getTexture()->getSize().y) {
-        hero.changeAnimation("Jump_Throw");
-    } else {
-        hero.changeAnimation("Throw");
+        if (hero.getSprite().getPosition().y < ground.getPosition().y - 2 * ground.getTexture()->getSize().y) {
+            hero.changeAnimation("Jump_Throw");
+        } else {
+            hero.changeAnimation("Throw");
+        }
+        hero.initBullet();
+        lastMovementClock.restart();
     }
-    hero.initBullet();
-    lastMovementClock.restart();
+}
+
+auto Game::spawnKnife() -> void {
+    fmt::println("Spawn knife called");
+    auto object = std::make_unique<Knife>(sf::Vector2f(window.getSize().x/ (std::rand() % 3 + 1),ground.getPosition().y - 180));
+    knife = std::move(object);
 }
 
 auto Game::generateRandomGroundObstacles() -> void {
@@ -412,9 +427,9 @@ auto Game::generateZombie() -> void {
     }
 }
 
-auto Game::loadZombie(sf::Vector2f const& position) -> void {
+auto Game::loadZombie(sf::Vector2f const& position, std::string const& gender) -> void {
     zombiePointer = nullptr;
-    auto zombie = std::make_unique<Zombie>(std::rand() % 2 == 0 ? "male" : "female");
+    auto zombie = std::make_unique<Zombie>(gender);
     zombie->updatePosition(position);
     zombiePointer = std::move(zombie);
 }
@@ -606,6 +621,9 @@ auto Game::run() -> void {
 //        Next level handling when hero is touching and of the window
         if(hero.getSprite().getPosition().x >= window.getSize().x){
             nextLevel();
+            if(currentLevel > 2 && !hero.canThrow){
+                spawnKnife();
+            }
             if(currentLevel >= 5){
                 generateFirstEnemy();
                 auto wasUpdated = hero.updateVelocity(sf::Vector2f(8,0));
@@ -649,6 +667,12 @@ auto Game::run() -> void {
 //        Back to idle if standing ( prevents running when not moving )
         if(lastMovementClock.getElapsedTime().asSeconds() > 0.3 && !hero.getIsDead()){
             hero.backToIdle(ground);
+        }
+
+        if(knife != nullptr && collision(knife->getSprite(), hero.getSprite())){
+            hero.canThrow = true;
+            fmt::println("changing knife to nullptr");
+            knife = nullptr;
         }
 
         if(firstEnemyPointer != nullptr){
@@ -783,6 +807,13 @@ auto Game::run() -> void {
             mainMenu.displayMessageText(window);
             window.draw(hero.getSprite());
             hero.drawBullet(window);
+
+//            drawing knife if not nullptr
+            if(knife != nullptr){
+                knife->animation(startTime);
+                fmt::println("should draw knife");
+                window.draw(knife->getSprite());
+            }
 
 //            drawing zombie if not nullptr
             if(zombiePointer != nullptr){

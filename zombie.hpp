@@ -11,6 +11,8 @@ public:
 
     auto move() -> void;
 
+    auto getGender() const -> std::string;
+
     auto setStartingPosition(sf::Sprite const& ground) -> void override;
 
     auto restartZombieClock() -> void;
