@@ -10,6 +10,6 @@ protected:
     sf::Sprite sprite;
 public:
     Bullet(sf::Vector2f const& heroPosition, bool const& isHero);
-    virtual auto move() -> void;
+    virtual auto move(int const& move) -> void;
     auto getSprite() -> sf::Sprite;
 };

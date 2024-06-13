@@ -5,5 +5,5 @@ class RobotBullet : public Bullet{
 
 public:
     RobotBullet(sf::Vector2f const& robotPosition);
-    auto move() -> void override;
+    auto move(int const& currentLevel) -> void override;
 };

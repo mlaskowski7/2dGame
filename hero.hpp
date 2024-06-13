@@ -46,7 +46,7 @@ class Hero : public Character{
 //        void used to initialize bullet after firing it
         auto initBullet() -> void;
         auto deleteBullet() -> void;
-        auto moveBullet() -> void;
+        auto moveBullet(int const& currentLevel) -> void;
 
 //        Score getter
         auto getScore() const -> int;

@@ -51,8 +51,8 @@ auto Robot::getIsBulletInitialized() -> bool {
     return bulletPointer != nullptr;
 }
 
-auto Robot::moveBullet() -> void {
+auto Robot::moveBullet(int const& currentLevel) -> void {
     if(bulletPointer != nullptr){
-        bulletPointer->move();
+        bulletPointer->move(currentLevel);
     }
 }

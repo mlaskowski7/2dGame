@@ -16,7 +16,7 @@ Game::Game() : gameStarted(), bg(), ground(), groundTexture(), hero(), mainMenu(
 
 
 //    load ground texture
-    groundTexture.loadFromFile("../assets/ground/groundDoubled.png");
+    groundTexture.loadFromFile("../assets/ground/ground.png");
     ground.setTexture(groundTexture);
     ground.setPosition(sf::Vector2f(0, window.getSize().y - groundTexture.getSize().y + 5));
 
@@ -513,11 +513,6 @@ auto Game::run() -> void {
                     isMessageDisplayed = true;
                 }
 
-//                Load game on L click
-                if(event.key.code == sf::Keyboard::L){
-                    loadGame();
-                }
-
 //                Pause Game on ESC click
                 if(event.key.code == sf::Keyboard::Escape){
                     gameStarted = false;
@@ -571,7 +566,8 @@ auto Game::run() -> void {
                     hero.setMoving(Movement::STILL);
                 }
 
-            }
+            }  else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L)
+                loadGame();
         }
 
 //        conduct hero movement according to his current state
@@ -662,7 +658,7 @@ auto Game::run() -> void {
         hero.animation(startTime);
 
 //        move bullet if its not nullptr
-        hero.moveBullet();
+        hero.moveBullet(currentLevel);
 
 //        Back to idle if standing ( prevents running when not moving )
         if(lastMovementClock.getElapsedTime().asSeconds() > 0.3 && !hero.getIsDead()){
@@ -671,8 +667,10 @@ auto Game::run() -> void {
 
         if(knife != nullptr && collision(knife->getSprite(), hero.getSprite())){
             hero.canThrow = true;
-            fmt::println("changing knife to nullptr");
             knife = nullptr;
+            mainMenu.setMessageText("Unlocked throwing ability ( W Click )");
+            isMessageDisplayed = true;
+            messageClock.restart();
         }
 
         if(firstEnemyPointer != nullptr){
@@ -729,7 +727,7 @@ auto Game::run() -> void {
             }
             if(robotPointer->getIsBulletInitialized() && collision(hero.getSprite(), robotPointer->getBulletSprite())){
                 hero.kill(ground);
-                deadMessage = "Killed by robot";
+                deadMessage = "Killed by enemy robot";
 
             }
             if(hero.getIsBulletInitialized() && collision(robotPointer->getSprite(), hero.getBulletSprite())){
@@ -761,7 +759,7 @@ auto Game::run() -> void {
             }
 
 //            move bullet if its initialized
-            robotPointer->moveBullet();
+            robotPointer->moveBullet(currentLevel);
         }
 
 //        enabling zombie movement and killing hero func after one second of a level

@@ -50,9 +50,9 @@ auto Hero::getIsBulletInitialized() -> bool {
     return bulletPointer != nullptr;
 }
 
-auto Hero::moveBullet() -> void {
+auto Hero::moveBullet(int const& currentLevel) -> void {
     if(bulletPointer != nullptr){
-        bulletPointer->move();
+        bulletPointer->move(currentLevel);
     }
 }
 

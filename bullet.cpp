@@ -7,7 +7,7 @@ Bullet::Bullet(sf::Vector2f const& heroPosition, bool const& isHero) {
     if(isHero){
         texture.loadFromFile("../assets/hero/male/Bullet.png");
     } else {
-        texture.loadFromFile("../assets/robot/bullet.png");
+        texture.loadFromFile("../assets/robotBackwards/fireball.png");
     }
     sprite.setTexture(texture);
     sprite.setScale(0.4,0.4);
@@ -21,8 +21,15 @@ Bullet::Bullet(sf::Vector2f const& heroPosition, bool const& isHero) {
     sprite.setPosition(position);
 }
 
-auto Bullet::move() -> void {
-    position += sf::Vector2f(15,0);
+auto Bullet::move(int const& currentLevel) -> void {
+    if(currentLevel < 5){
+        position += sf::Vector2f(15,0);
+    } else if(currentLevel < 10){
+        position += sf::Vector2f(18,0);
+    } else{
+        position += sf::Vector2f (20,0);
+    }
+
     sprite.setPosition(position);
 }
 
